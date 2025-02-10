@@ -2,6 +2,7 @@
 
 buildscript {
     repositories {
+        google()
         maven { url 'https://repo.huaweicloud.com/repository/maven' }
         maven {url 'https://dl.google.com/dl/android/maven2/'}
         maven {url 'https://www.jitpack.io'}
@@ -19,6 +20,7 @@ buildscript {
 
 allprojects {
     repositories {
+        google()
         maven { url 'https://repo.huaweicloud.com/repository/maven' }
         maven {url 'https://dl.google.com/dl/android/maven2/'}
         maven {url 'https://www.jitpack.io'}
