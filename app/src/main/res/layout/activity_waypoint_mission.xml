@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:keepScreenOn="true">
+    <com.amap.api.maps.MapView
+        android:id="@+id/map"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+       <LinearLayout
+           android:orientation="vertical"
+           android:background="@color/colorPrimary"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content">
+
+           <Button
+               android:id="@+id/simulator_button"
+               android:text="模拟飞行"
+               android:onClick="onClick"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"/>
+
+
+              <LinearLayout
+                  android:layout_width="match_parent"
+                  android:orientation="horizontal"
+                  android:layout_height="wrap_content">
+
+                  <Button
+                      android:layout_width="wrap_content"
+                      android:text="加载任务"
+                      android:id="@+id/load_waypoint_button"
+                      android:onClick="onClick"
+                      android:layout_height="wrap_content" />
+
+                  <Button
+                      android:layout_width="wrap_content"
+                      android:text="上传任务"
+                      android:id="@+id/upload_waypoint_button"
+                      android:onClick="onClick"
+                      android:layout_height="wrap_content" />
+
+                     <Button
+                         android:layout_width="wrap_content"
+                         android:text="开始任务"
+                         android:id="@+id/start_waypoint_button"
+                         android:onClick="onClick"
+                         android:layout_height="wrap_content" />
+
+                     <Button
+                         android:layout_width="wrap_content"
+                         android:text="暂停任务"
+                         android:id="@+id/pause_waypoint_button"
+                         android:onClick="onClick"
+                         android:layout_height="wrap_content" />
+
+                     <Button
+                         android:layout_width="wrap_content"
+                         android:text="继续任务"
+                         android:id="@+id/resume_waypoint_button"
+                         android:onClick="onClick"
+                         android:layout_height="wrap_content" />
+
+                     <Button
+                         android:layout_width="wrap_content"
+                         android:text="结束任务"
+                         android:id="@+id/stop_waypoint_button"
+                         android:onClick="onClick"
+                         android:layout_height="wrap_content" />
+
+              </LinearLayout>
+
+              <TextView
+                  android:id="@+id/fly_info_textview"
+                  android:textColor="#ff0000"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content" />
+
+           <TextView
+               android:id="@+id/mission_info_textview"
+               android:textColor="#ff0000"
+               android:text="1235324513"
+               android:textSize="10sp"
+               android:layout_alignParentBottom="true"
+               android:layout_alignParentRight="true"
+               android:layout_width="200dp"
+               android:layout_height="wrap_content" />
+       </LinearLayout>
+    <LinearLayout
+        android:id="@+id/bottom_buttons_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="bottom"
+        android:layout_alignParentBottom="true">
+
+        <TextView
+            android:id="@+id/hor_dist"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onClick"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="水平距离" />
+
+        <TextView
+            android:id="@+id/ver_dist"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="相对高度"
+            android:gravity="center"
+            android:onClick="onClick" />
+
+        <TextView
+            android:id="@+id/hor_v"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="水平飞行速度"
+            android:onClick="onClick" />
+
+        <TextView
+            android:id="@+id/ver_v"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="垂直飞行速度"
+            android:gravity="center"
+            android:onClick="onClick" />
+
+        <TextView
+            android:id="@+id/planebattery_state3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColor="#FFFFFF"
+            android:text="无人机电量"
+            android:gravity="center"
+            android:onClick="onClick" />
+    </LinearLayout>
+</RelativeLayout>

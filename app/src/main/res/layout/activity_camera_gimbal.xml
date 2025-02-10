@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+android:id="@+id/crame_view"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:background="#000000"
+android:orientation="vertical"
+android:keepScreenOn="true">
+
+<TextureView
+    android:id="@+id/video_texture_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" />
+
+<com.gdu.demo.views.PaintView
+    android:id="@+id/paint_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent"
+    />
+
+<LinearLayout
+    android:id="@+id/camera_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+    <Button
+        android:id="@+id/ai_recognize"
+        android:text="AI识别"
+        android:onClick="onClick"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <Button
+        android:id="@+id/quit_airecognize"
+        android:text="退出ai识别"
+        android:onClick="onClick"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+</LinearLayout>
+
+<LinearLayout
+    android:id="@+id/bottom_buttons_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:layout_gravity="bottom"
+    android:layout_alignParentBottom="true">
+
+<Button
+    android:id="@+id/rgb_mode"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:onClick="onClick"
+    android:text="红外" />
+
+<Button
+    android:id="@+id/wide_field_mode"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:onClick="onClick"
+    android:text="分屏" />
+
+<Button
+    android:id="@+id/fouseadj_mode"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:onClick="onClick"
+    android:text="变焦" />
+
+<Button
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/fixfoused_mode"
+    android:onClick="onClick"
+    android:text="定焦"/>
+
+    <TextView
+    android:id="@+id/hor_dist"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:onClick="onClick"
+    android:layout_weight="1"
+    android:textColor="#FFFFFF"
+    android:gravity="center"
+    android:text="水平距离" />
+
+<TextView
+    android:id="@+id/ver_dist"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_weight="1"
+    android:textColor="#FFFFFF"
+    android:text="相对高度"
+    android:gravity="center"
+    android:onClick="onClick" />
+
+<TextView
+    android:id="@+id/hor_v"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_weight="1"
+    android:textColor="#FFFFFF"
+    android:text="水平飞行速度"
+    android:gravity="center"
+    android:onClick="onClick" />
+
+<TextView
+    android:id="@+id/ver_v"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_weight="1"
+    android:textColor="#FFFFFF"
+    android:text="垂直飞行速度"
+    android:gravity="center"
+    android:onClick="onClick" />
+
+<TextView
+    android:id="@+id/planebattery_state3"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_weight="1"
+    android:textColor="#FFFFFF"
+    android:text="无人机电量"
+    android:gravity="center"
+    android:onClick="onClick" />
+
+</LinearLayout>
+
+<ImageView
+    android:id="@+id/yuv_imageview"
+    android:layout_alignParentRight="true"
+    android:layout_alignParentBottom="true"
+    android:layout_width="384dp"
+    android:layout_height="216dp"/>
+
+</RelativeLayout>
+
