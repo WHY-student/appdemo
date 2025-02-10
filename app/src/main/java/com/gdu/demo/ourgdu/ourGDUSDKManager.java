@@ -46,7 +46,7 @@ import java.io.File;
 import org.greenrobot.greendao.database.DatabaseOpenHelper;
 
 
-public class ourGDUSDKManager {
+public class ourGDUSDKManager{
     private static ourGDUSDKManager a;
     private static DaoSession b;
     private ourGDUAircraft gduaircraft;

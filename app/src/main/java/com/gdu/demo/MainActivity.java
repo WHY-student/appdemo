@@ -18,7 +18,8 @@ import com.gdu.sdk.airlink.GDUAirLink;
 import com.gdu.sdk.base.BaseComponent;
 import com.gdu.sdk.base.BaseProduct;
 import com.gdu.sdk.manager.GDUSDKInitEvent;
-import com.gdu.sdk.manager.GDUSDKManager;
+//import com.gdu.sdk.manager.GDUSDKManager;
+import com.gdu.demo.ourgdu.ourGDUSDKManager;
 import com.gdu.sdk.remotecontroller.GDURemoteController;
 import com.gdu.sdk.util.CommonCallbacks;
 import com.gdu.util.logs.RonLog;
@@ -64,7 +65,7 @@ public class MainActivity extends Activity {
         mPairingButton = findViewById(R.id.pairing_button);
         tvConnectState = findViewById(R.id.tv_connect_state);
         ((TextView) findViewById(R.id.version_textview)).setText(getResources().getString(R.string.sdk_version,
-                GDUSDKManager.getInstance().getSDKVersion(mContext)));
+                ourGDUSDKManager.getInstance().getSDKVersion(mContext)));
 
 //        Intent intent = new Intent(mContext, DemoListActivity.class);
 //        startActivity(intent);
@@ -120,11 +121,11 @@ public class MainActivity extends Activity {
     }
 
     private void startSDKRegistration(){
-        GDUSDKManager.getInstance().registerApp(mContext.getApplicationContext(), new GDUSDKManager.SDKManagerCallback() {
+        ourGDUSDKManager.getInstance().registerApp(mContext.getApplicationContext(), new ourGDUSDKManager.SDKManagerCallback() {
             @Override
             public void onRegister(GDUError error) {
                 if (error == GDUError.REGISTRATION_SUCCESS) {
-                    GDUSDKManager.getInstance().startConnectionToProduct();
+                    ourGDUSDKManager.getInstance().startConnectionToProduct();
                 }
             }
 
