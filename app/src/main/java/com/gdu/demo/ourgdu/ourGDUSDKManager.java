@@ -6,8 +6,8 @@ package com.gdu.demo.ourgdu;
 //
 
 
-import a.a.a.a.b;
-import a.a.a.b.a;
+//import a.a.a.a.b;
+//import a.a.a.b.a;
 import a.b.a.c;
 import a.b.a.d;
 import android.content.ComponentName;
@@ -59,7 +59,7 @@ public class ourGDUSDKManager{
     private boolean j;
     private boolean k;
     private c l;
-    private b m;
+    private a.a.a.a.b m;
     RcCustomKeyManager n;
     ServiceConnection o = new ServiceConnection() {
         public void onServiceConnected(ComponentName var1, IBinder var2) {
@@ -187,7 +187,7 @@ public class ourGDUSDKManager{
     private void b() {
 
         if (b == null) {
-            SQLiteDatabase var1 = new a.a.a.b.b(new a(this.d, GduConfig.BaseDirectory + File.separator + "database"), "gdusdk.db").getWritableDatabase();
+            SQLiteDatabase var1 = new a.a.a.b.b(new a.a.a.b.a(this.d, GduConfig.BaseDirectory + File.separator + "database"), "gdusdk.db").getWritableDatabase();
             b = (new DaoMaster(var1)).newSession();
         }
 

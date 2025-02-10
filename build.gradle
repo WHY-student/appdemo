@@ -2,15 +2,13 @@
 
 buildscript {
     repositories {
-        google()
         maven { url 'https://repo.huaweicloud.com/repository/maven' }
         maven {url 'https://dl.google.com/dl/android/maven2/'}
         maven {url 'https://www.jitpack.io'}
         mavenLocal()
-        
+
     }
     dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.0"
         classpath 'com.android.tools.build:gradle:4.2.2'
         classpath 'org.greenrobot:greendao-gradle-plugin:3.3.1'
         // NOTE: Do not place your application dependencies here; they belong
@@ -18,9 +16,13 @@ buildscript {
     }
 }
 
+plugins {
+    id 'org.jetbrains.kotlin.android' version '1.9.22' apply false
+    id 'org.jetbrains.kotlin.plugin.serialization' version '1.9.22' apply false
+}
+
 allprojects {
     repositories {
-        google()
         maven { url 'https://repo.huaweicloud.com/repository/maven' }
         maven {url 'https://dl.google.com/dl/android/maven2/'}
         maven {url 'https://www.jitpack.io'}
