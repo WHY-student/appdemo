@@ -65,7 +65,10 @@ public class PaintView extends AppCompatImageView {
             int y = detection.getY();
             int maxX = x + detection.getW();
             int maxY = y + detection.getH();
-            String label = detection.getLabelName();;
+            String label = detection.getLabelName();
+            if(label==null){
+                label = ""+detection.getLabelIndex();
+            }
 //            if(labelIndex < 0){
 //                label = "unknown";
 //            }

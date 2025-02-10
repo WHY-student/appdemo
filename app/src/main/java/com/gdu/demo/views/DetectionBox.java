@@ -20,7 +20,7 @@ public class DetectionBox {
 
     @JsonProperty("LabelIndex")
     private int labelIndex;
-    @JsonProperty("LabelIndex")
+    @JsonProperty("LabelName")
     private String LabelName;
 
     @JsonProperty("ModelID")
