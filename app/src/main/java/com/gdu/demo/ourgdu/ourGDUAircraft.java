@@ -44,7 +44,8 @@ import com.gdu.sdk.radar.GDURadar;
 import com.gdu.sdk.remotecontroller.GDURemoteController;
 import com.gdu.sdk.util.CommonCallbacks;
 import com.gdu.sdk.util.a;
-import com.gdu.sdk.vision.GDUVision;
+import com.gdu.demo.ourgdu.ourGDUVision;
+//import com.gdu.sdk.vision.GDUVision;
 import com.gdu.socketmodel.GduFrame3;
 import com.gdu.util.ByteUtils;
 import java.util.ArrayList;
@@ -61,7 +62,7 @@ public class ourGDUAircraft extends BaseProduct {
     private GDURadar h;
     private GDURemoteController i;
     private GDUAirLink j;
-    private GDUVision k;
+    private ourGDUVision k;
     private GDULTE l;
     private GDUCustomMsg m;
     private GDUNoFlyZone n;
@@ -659,10 +660,9 @@ public class ourGDUAircraft extends BaseProduct {
         return this.j;
     }
 
-    public GDUVision getGduVision() {
+    public ourGDUVision getGduVision() {
         if (this.k == null) {
-            GDUVision var1;
-            var1 = new GDUVision();
+            ourGDUVision var1 = new ourGDUVision();
             this.k = var1;
         }
 

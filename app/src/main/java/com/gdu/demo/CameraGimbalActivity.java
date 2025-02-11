@@ -60,7 +60,8 @@ import com.gdu.demo.ourgdu.ourGDUAircraft;
 import com.gdu.sdk.util.CommonCallbacks;
 import com.gdu.battery.BatteryState;
 import com.gdu.sdk.battery.GDUBattery;
-import com.gdu.sdk.vision.GDUVision;
+//import com.gdu.sdk.vision.GDUVision;
+import com.gdu.demo.ourgdu.ourGDUVision;
 import com.gdu.sdk.flightcontroller.FlightControllerState;
 import com.gdu.sdk.flightcontroller.GDUFlightController;
 import com.gdu.sdk.mission.MissionControl;
@@ -81,8 +82,9 @@ import com.gdu.common.mission.waypoint.WaypointMissionUploadEvent;
 import com.gdu.drone.LocationCoordinate2D;
 import com.gdu.drone.LocationCoordinate3D;
 import com.gdu.rtk.PositioningSolution;
-import com.gdu.sdk.vision.GDUVision;
+//import com.gdu.sdk.vision.GDUVision;
 import com.gdu.sdk.vision.OnTargetDetectListener;
+import com.gdu.sdk.vision.OnTargetTrackListener;
 import com.gdu.util.logs.RonLog;
 
 import java.nio.charset.StandardCharsets;
@@ -116,7 +118,7 @@ public class CameraGimbalActivity extends Activity implements TextureView.Surfac
     private GDUCodecManager codecManager = null;
     private GDUBattery mBattery;
     private GDUFlightController mGDUFlightController;
-    private GDUVision gduVision;
+    private ourGDUVision gduVision;
     private OnTargetDetectListener listener;
 
     private TextureView mGduPlayView;
@@ -352,7 +354,7 @@ public class CameraGimbalActivity extends Activity implements TextureView.Surfac
         }
     }
     private void initGduvision(){
-        gduVision =(GDUVision) ((ourGDUAircraft) SdkDemoApplication.getProductInstance()).getGduVision();
+        gduVision =(ourGDUVision) ((ourGDUAircraft) SdkDemoApplication.getProductInstance()).getGduVision();
         if (gduVision==null){
             toast("gduVision出现异常");
             return;
@@ -909,14 +911,46 @@ public class CameraGimbalActivity extends Activity implements TextureView.Surfac
                 break;
             case R.id.ai_recognize:
 
-//                gduVision.startTargetDetect(gduError ->{
-//                    if (gduError!=null){
-//                        toast("目标识别启动出现错误");
-//                    }
-//                    else{
-//                        toast("目标识别顺利启动");
-//                    }
-//                });
+                gduVision.setOnTargetTrackListener(new OnTargetTrackListener() {
+                       @Override
+                       public void onTargetDetecting(List<TargetMode> list) {
+                           toast("获取到物体");
+                       }
+
+                       @Override
+                       public void onTargetTracking(TargetMode targetMode) {
+                            toast("正在跟踪物体");
+                       }
+
+                       @Override
+                       public void onTargetTrackFailed(int i) {
+
+                       }
+
+                       @Override
+                       public void onTargetTrackStart() {
+
+                       }
+
+                       @Override
+                       public void onTargetTrackStop() {
+
+                       }
+
+                       @Override
+                       public void onTargetTrackModelClose() {
+
+                       }
+                   }
+                );
+                gduVision.startSmartTrack(gduError ->{
+                    if (gduError!=null){
+                        toast("目标跟踪启动出现错误");
+                    }
+                    else{
+                        toast("目标跟踪顺利启动");
+                    }
+                });
 //
 //
 //                gduVision.setOnTargetDetectListener(new OnTargetDetectListener() {
@@ -965,6 +999,14 @@ public class CameraGimbalActivity extends Activity implements TextureView.Surfac
 //                });
                 break;
             case R.id.quit_airecognize:
+                gduVision.stopSmartTrack(gduError -> {
+                    if (gduError!=null){
+                        toast("目标跟踪终止出现错误");
+                    }
+                    else{
+                        toast("目标跟踪顺利终止");
+                    }
+                });
 //                gduVision.stopTargetDetect(gduError -> {
 //                    if (gduError!=null){
 //                        toast("目标识别终止出现错误");
