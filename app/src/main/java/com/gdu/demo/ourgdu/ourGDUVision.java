@@ -8,7 +8,9 @@ import android.util.Log;
 import com.gdu.common.error.GDUError;
 import com.gdu.drone.TargetMode;
 import com.gdu.gdusocket.GduCommunication3;
-import com.gdu.gdusocket.GduSocketManager;
+//import com.gdu.gdusocket.GduSocketManager;
+import com.gdu.demo.ourgdu.ourGduSocketManager;
+
 import com.gdu.gdusocket.SocketCallBack3;
 import com.gdu.sdk.util.CommonCallbacks;
 import com.gdu.sdk.vision.GDUVision;
@@ -85,7 +87,7 @@ public class ourGDUVision extends GDUVision {
             }
         };
         this.multipleTargetTrackCb = socketCallBack33;
-        this.mGduCommunication3 = GduSocketManager.getInstance().getCommunication();
+        this.mGduCommunication3 = ourGduSocketManager.getInstance().getCommunication();
         this.mTargetModeList = new ArrayList();
         this.mGduCommunication3.addCycleACKCB(GduSocketConfig3.CYCLE_ACK_TARGET_DETECT, socketCallBack3);
         this.mGduCommunication3.addCycleACKCB(GduSocketConfig3.CYCLE_ACK_TARGET_DETECT_NEW, socketCallBack3);

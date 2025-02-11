@@ -7,13 +7,16 @@ package com.gdu.demo.ourgdu;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
+
 import com.gdu.common.ConnStateEnum;
 import com.gdu.common.GlobalVariable;
 import com.gdu.common.error.GDUError;
 import com.gdu.drone.BinocularInfo;
 import com.gdu.drone.GimbalType;
 import com.gdu.drone.PlanType;
-import com.gdu.gdusocket.GduSocketManager;
+//import com.gdu.gdusocket.GduSocketManager;
+import com.gdu.demo.ourgdu.ourGduSocketManager;
 import com.gdu.gdusocket.SocketCallBack3;
 import com.gdu.sdk.airlink.GDUAirLink;
 import com.gdu.sdk.base.BaseComponent;
@@ -671,8 +674,9 @@ public class ourGDUAircraft extends BaseProduct {
 
     public void getProductSN(final CommonCallbacks.CompletionCallbackWith<String> var1) {
         if (TextUtils.isEmpty(GlobalVariable.SN)) {
-            GduSocketManager.getInstance().getCommunication().getUnique(new SocketCallBack3() {
+            ourGduSocketManager.getInstance().getCommunication().getUnique(new SocketCallBack3() {
                 public void callBack(byte var1x, GduFrame3 var2) {
+                    Log.d("newCALL","newCall");
                     CommonCallbacks.CompletionCallbackWith var3;
                     byte[] var4;
                     if (var1x == 0 && var2 != null && (var4 = var2.frameContent) != null && var4.length >= 17) {

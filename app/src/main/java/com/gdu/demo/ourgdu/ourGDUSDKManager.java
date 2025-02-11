@@ -24,7 +24,8 @@ import com.gdu.common.GlobalVariable;
 import com.gdu.common.error.GDUError;
 import com.gdu.config.GduConfig;
 import com.gdu.gdusocket.GduCommunication3;
-import com.gdu.gdusocket.GduSocketManager;
+//import com.gdu.gdusocket.GduSocketManager;
+import com.gdu.demo.ourgdu.ourGduSocketManager;
 import com.gdu.gdusocket.ce.GduCESocket3;
 import com.gdu.gdusocket.ce.IGduSocket;
 import com.gdu.product.ComponentKey;
@@ -52,7 +53,7 @@ public class ourGDUSDKManager{
     private ourGDUAircraft gduaircraft;
     private Context d;
     private GduRCManager e;
-    private GduSocketManager f;
+    private ourGduSocketManager f;
     private GduCommunication3 g;
     private ourGDUSDKManager.SDKManagerCallback h;
     private boolean i;
@@ -180,7 +181,7 @@ public class ourGDUSDKManager{
     }
 
     private GduCESocket3 a() {
-        GduSocketManager var1;
+        ourGduSocketManager var1;
         return (var1 = this.f) != null && var1.getGduCESocket() != null ? this.f.getGduCESocket() : null;
     }
 
@@ -209,8 +210,8 @@ public class ourGDUSDKManager{
             this.e = GduRCManager.getInstance(var1);
         }
 
-        GduSocketManager var4;
-        this.f = var4 = GduSocketManager.getInstance();
+        ourGduSocketManager var4;
+        this.f = var4 = ourGduSocketManager.getInstance();
         this.g = var4.getCommunication();
         ourGDUAircraft var5;
         ourGDUAircraft var10000 = var5 = new ourGDUAircraft();
@@ -405,7 +406,7 @@ public class ourGDUSDKManager{
                     }
                 });
             } else {
-                GduSocketManager var1;
+                ourGduSocketManager var1;
                 if ((var1 = this.f) == null) {
                     return;
                 }
