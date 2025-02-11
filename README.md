@@ -12,7 +12,7 @@ GDU无人机Android SDK目前开放了无人机控制，挂载云台（8K,
 ## SDK集成
 ### 添加依赖文件
 ~~~xml
-1.导入SDK开发包GduLibrary-*.*.*.jar到libs目录；
+、、1.导入SDK开发包GduLibrary-*.*.*.jar到libs目录；
   导入libCRtp.so和librtmp.so到libs下的arm64-v8a和armeabi-v7a目录
 2.添加jar包
  implementation fileTree(dir: 'libs', include: ['*.jar'])
