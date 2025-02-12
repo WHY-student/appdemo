@@ -39,9 +39,37 @@ import java.util.concurrent.LinkedBlockingDeque;
 
 public class ourGduCESocket3 extends GduCESocket3 {
 
+    private GduFrameUtil3 D = new GduFrameUtil3();
+//    private DatagramPacket i;
+
     @Override
     public boolean handlerReceiveData(byte[] bArr, boolean z){
-        Log.d("ReceiveData", "handlerReceiveData: ");
+        Log.d("ReceiveData", String.format("handlerReceiveData: {}", new String(bArr)));
+
+
+        // 解析cmd
+        int var6 = 14;
+        boolean var3 = false;
+        if ((bArr[3] & 16) != 0) {
+            var6 = 15;
+            var3 = true;
+        }
+
+        if ((bArr[3] & 8) != 0) {
+            ++var6;
+        }
+
+        if ((var6 += this.D.checkFrameHead3(bArr, 0, var3)) < 3) {
+            Log.i("FrameHead", "get Data length Err:" + var6);
+            return true;
+        } else {
+            short var7 = ByteUtilsLowBefore.byte2short(bArr, 8);
+            Log.i("NormalData", "start parse data: ");
+//            this.a(bArr, this.i.getOffset(), var6);
+            GduFrame3 gduFrame3 = GduFrameUtil3.byteArrayToGduFrame3(bArr, 0, var6);
+            Log.i("frameCMD", "frameCMD : " + gduFrame3.frameCMD);
+        }
+
         return super.handlerReceiveData(bArr, z);
     }
 }
