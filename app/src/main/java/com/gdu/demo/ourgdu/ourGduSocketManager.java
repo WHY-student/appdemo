@@ -14,7 +14,7 @@ import java.net.SocketException;
 public class ourGduSocketManager {
     public static final String a = "GduSocketManager";
     private static ourGduSocketManager b;
-    private GduCESocket3 c;
+    private ourGduCESocket3 c;
     private ourGduCommunication3 d;
 
     public static ourGduSocketManager getInstance() {
@@ -36,8 +36,8 @@ public class ourGduSocketManager {
         RonLog2FileApi.getSingle().saveData("api初始化Socket");
         RonLog.LogD(new String[]{"api初始化Socket"});
         this.c();
-        GduCESocket3 var1=new GduCESocket3();
-        GduCESocket3 var10003 = new GduCESocket3();
+        ourGduCESocket3 var1=new ourGduCESocket3();
+        ourGduCESocket3 var10003 = new ourGduCESocket3();
         //var10003.<init>();
         var10002.c = var10003;
         var10001.d = new ourGduCommunication3(var1);

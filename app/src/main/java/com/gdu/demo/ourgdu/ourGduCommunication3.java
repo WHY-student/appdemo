@@ -26,7 +26,7 @@ import java.util.Calendar;
 import java.util.TimeZone;
 
 public class ourGduCommunication3 {
-    private GduCESocket3 a;
+    private ourGduCESocket3 a;
     private final byte b = 0;
     private final byte c = 1;
     private final byte d = 2;
@@ -96,7 +96,7 @@ public class ourGduCommunication3 {
     }*/
 
 
-    public ourGduCommunication3(GduCESocket3 var1) {
+    public ourGduCommunication3(ourGduCESocket3 var1) {
         this.a = var1;
         if (GlobalVariable.isRCSEE) {
             this.f = "145.192.1.81";
@@ -127,73 +127,14 @@ public class ourGduCommunication3 {
     }
 
     public boolean createSocket() {
-        Exception var10000;
-        label45: {
-            GduCESocket3 var11;
-            ourGduCommunication3 var12;
-            boolean var10001;
-            ourGduCommunication3 var10002;
-            ourGduCommunication3 var10003;
-            String var10004;
-            try {
-                var11 = this.a;
-                var12 = this;
-                var10002 = this;
-                var10003 = this;
-                var10004 = this.f;
-            } catch (Exception var8) {
-                var10000 = var8;
-                var10001 = false;
-                break label45;
-            }
-
-            String var9 = var10004;
-
-            String var15;
-            try {
-                var15 = var10003.h;
-            } catch (Exception var7) {
-                var10000 = var7;
-                var10001 = false;
-                break label45;
-            }
-
-            String var1 = var15;
-
-            int var13;
-            try {
-                var13 = var10002.g;
-            } catch (Exception var6) {
-                var10000 = var6;
-                var10001 = false;
-                break label45;
-            }
-
-            int var2 = var13;
-
-            int var14;
-            try {
-                var14 = var12.i;
-            } catch (Exception var5) {
-                var10000 = var5;
-                var10001 = false;
-                break label45;
-            }
-
-            int var3 = var14;
-
-            try {
-                return var11.createSocket(var9, var1, var2, var3);
-            } catch (Exception var4) {
-                var10000 = var4;
-                var10001 = false;
-            }
+        try {
+            return this.a.createSocket(this.f, this.h, this.g, this.i);
+        } catch (Exception e) {
+            e.printStackTrace();
+            RonLog.LogD("test createSocket " + e.getMessage());
+            return false;
         }
 
-        Exception var10 = var10000;
-        var10.printStackTrace();
-        RonLog.LogD(new String[]{"test createSocket " + var10.getMessage()});
-        return false;
     }
     public void disconnSocket() {
         GduCESocket3 var1;
