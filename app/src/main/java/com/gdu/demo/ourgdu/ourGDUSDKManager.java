@@ -100,6 +100,9 @@ public class ourGDUSDKManager{
         if (this.a() != null) {
             this.a().isUsbHadBreak(var1 ^ true);
         }
+        if(this.oura()!=null){
+            this.oura().isUsbHadBreak(var1 ^ true);
+        }
 
         if (var1) {
             GlobalVariable.RC_usb_hadConn = 1;
@@ -185,10 +188,14 @@ public class ourGDUSDKManager{
     }
 
     private GduCESocket3 a() {
+        ourGduSocketManager var1;
+        return (var1 = this.f) != null && var1.getGduCESocket() != null ? this.f.getGduCESocket() : null;
+    }
+
+    private GduCESocket3 oura(){
         GduSocketManager var1;
         return (var1 = this.their_f) != null && var1.getGduCESocket() != null ? this.their_f.getGduCESocket() : null;
     }
-
     private void b() {
 
         if (b == null) {
@@ -456,6 +463,14 @@ public class ourGDUSDKManager{
                             RonLog.LogD(new String[]{"开启socket通信"});
                             ourGDUSDKManager.this.f.startConnect();
                         }
+                        if (ourGDUSDKManager.this.their_f != null) {
+                            ourGDUSDKManager.this.i = true;
+                            GlobalVariable.RC_usb_hadConn = 1;
+                            GlobalVariable.connType = ConnType.MGP03_RC_USB;
+                            RonLog2FileApi.getSingle().saveData("开启socket通信");
+                            RonLog.LogD(new String[]{"开启socket通信"});
+                            ourGDUSDKManager.this.their_f.startConnect();
+                        }
                     }
 
                     public void closeUsbModel() {
@@ -470,6 +485,18 @@ public class ourGDUSDKManager{
                 }
 
                 var1.startConnect();
+                ourGduSocketManager temp;
+                if ((temp = this.f) == null) {
+                    return;
+                }
+                try {
+                    temp.startConnect();
+                    Log.d("IMUInit", "ourGduSocketManager开始连接");
+                }
+                catch (Exception e){
+                    Log.d("IMUInit", "ourGduSocketManager连接错误");
+                }
+
             }
 
         }
