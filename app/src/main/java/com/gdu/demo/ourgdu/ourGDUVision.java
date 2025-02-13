@@ -7,7 +7,7 @@ package com.gdu.demo.ourgdu;
 import android.util.Log;
 import com.gdu.common.error.GDUError;
 import com.gdu.drone.TargetMode;
-//import com.gdu.gdusocket.GduCommunication3;
+import com.gdu.gdusocket.GduCommunication3;
 import com.gdu.demo.ourgdu.ourGduCommunication3;
 //import com.gdu.gdusocket.GduSocketManager;
 import com.gdu.demo.ourgdu.ourGduSocketManager;

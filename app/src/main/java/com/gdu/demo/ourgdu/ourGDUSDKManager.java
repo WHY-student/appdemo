@@ -56,6 +56,9 @@ public class ourGDUSDKManager{
     private GduRCManager e;
     private ourGduSocketManager f;
     private ourGduCommunication3 g;
+
+    private GduSocketManager their_f;
+    private GduCommunication3 their_g;
     private ourGDUSDKManager.SDKManagerCallback h;
     private boolean i;
     private boolean j;
@@ -182,8 +185,8 @@ public class ourGDUSDKManager{
     }
 
     private GduCESocket3 a() {
-        ourGduSocketManager var1;
-        return (var1 = this.f) != null && var1.getGduCESocket() != null ? this.f.getGduCESocket() : null;
+        GduSocketManager var1;
+        return (var1 = this.their_f) != null && var1.getGduCESocket() != null ? this.their_f.getGduCESocket() : null;
     }
 
     private void b() {
@@ -210,7 +213,9 @@ public class ourGDUSDKManager{
         if ((var1 = this.d) != null) {
             this.e = GduRCManager.getInstance(var1);
         }
-
+        GduSocketManager temp;
+        this.their_f=temp=GduSocketManager.getInstance();
+        this.their_g=temp.getCommunication();
         ourGduSocketManager var4;
         this.f = var4 = ourGduSocketManager.getInstance();
         this.g = var4.getCommunication();
@@ -228,6 +233,56 @@ public class ourGDUSDKManager{
     }
 
     private void e() {
+        this.their_f.setConnectCallBack(new IGduSocket.OnConnectListener() {
+            public void onConnect() {
+                ourGDUSDKManager.this.f();
+                RonLog2FileApi.getSingle().saveData("GduDroneApi====:onConnect===:" + ourGDUSDKManager.this.j);
+                RonLog.LogD(new String[]{"GduDroneApi====:onConnect===:" + ourGDUSDKManager.this.j});
+            }
+
+            public void onDisConnect() {
+                RonLog2FileApi.getSingle().saveData("GduDroneApi====:onDisConnect===:" + ourGDUSDKManager.this.j);
+                RonLog.LogD(new String[]{"GduDroneApi====:onDisConnect===:" + ourGDUSDKManager.this.j});
+                if (ourGDUSDKManager.this.j) {
+                    if (ourGDUSDKManager.this.h != null) {
+                        ourGDUSDKManager.this.h.onProductDisconnect();
+                    }
+
+                    ourGDUSDKManager.this.j = false;
+                    ourGDUSDKManager.this.e.disconnect();
+                    ourGDUSDKManager.this.e.closeConnect();
+                    ourGDUSDKManager.this.p = false;
+                    ourGDUSDKManager.this.q = false;
+                    ourGDUSDKManager.this.r = false;
+                    ourGDUSDKManager.this.t = false;
+                    ourGDUSDKManager.this.u = false;
+                }
+            }
+
+            public void onConnectDelay(boolean var1) {
+            }
+
+            public void onConnectMore() {
+                ourGDUSDKManager.this.j = false;
+            }
+
+            public void onComponentChange(ComponentKey var1) {
+                ourGDUSDKManager.this.a(var1);
+            }
+        });
+        this.their_f.getGduCESocket().setACDataReceivedListener(new IGduSocket.OnDataReceivedListener() {
+            public void onDataReceived(Object var1) {
+                if (!ourGDUSDKManager.this.j) {
+                    ourGDUSDKManager.this.j = true;
+                    if (ourGDUSDKManager.this.gduaircraft == null) {
+                        ourGDUSDKManager.this.gduaircraft = new ourGDUAircraft();
+                    }
+
+                    ourGDUSDKManager.this.h.onProductConnect(ourGDUSDKManager.this.gduaircraft);
+                }
+
+            }
+        });
         this.f.setConnectCallBack(new IGduSocket.OnConnectListener() {
             public void onConnect() {
                 ourGDUSDKManager.this.f();
@@ -348,6 +403,8 @@ public class ourGDUSDKManager{
     private void f() {
         this.g.synTime((var0, var1) -> {
         });
+        this.their_g.synTime((var0, var1) -> {
+        });
     }
 
     public BaseProduct getProduct() {
@@ -407,8 +464,8 @@ public class ourGDUSDKManager{
                     }
                 });
             } else {
-                ourGduSocketManager var1;
-                if ((var1 = this.f) == null) {
+                GduSocketManager var1;
+                if ((var1 = this.their_f) == null) {
                     return;
                 }
 
