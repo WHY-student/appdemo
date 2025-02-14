@@ -1,5 +1,7 @@
 package com.gdu.demo.ourgdu;
 
+import android.util.Log;
+
 import com.gdu.common.GlobalVariable;
 import com.gdu.gdusocket.GduCommunication3;
 import com.gdu.demo.ourgdu.ourGduCommunication3;
@@ -15,7 +17,7 @@ public class ourGduSocketManager {
     public static final String a = "GduSocketManager";
     private static ourGduSocketManager b;
     private ourGduCESocket3 c;
-    private ourGduCommunication3 d;
+    private GduCommunication3 d;
 
     public static ourGduSocketManager getInstance() {
         if (b == null) {
@@ -37,10 +39,10 @@ public class ourGduSocketManager {
         RonLog.LogD(new String[]{"api初始化Socket"});
         this.c();
         ourGduCESocket3 var1=new ourGduCESocket3();
-        ourGduCESocket3 var10003 = new ourGduCESocket3();
+//        ourGduCESocket3 var10003 = new ourGduCESocket3();
         //var10003.<init>();
-        var10002.c = var10003;
-        var10001.d = new ourGduCommunication3(var1);
+        var10002.c = var1;
+        var10001.d = new GduCommunication3(var1);
         var10000.b();
     }
 
@@ -64,15 +66,16 @@ public class ourGduSocketManager {
         GlobalVariable.UDP_SOCKET_IMG_PORT = 7078;
     }
 
-    public ourGduCommunication3 getCommunication() {
+    public GduCommunication3 getCommunication() {
         return this.d;
     }
 
-    public GduCESocket3 getGduCESocket() {
+    public ourGduCESocket3 getGduCESocket() {
         return this.c;
     }
 
     public void setConnectCallBack(IGduSocket.OnConnectListener var1) {
+        Log.d("ourSocketManager", "this.m设置");
         this.c.setOnConnectListener(var1);
     }
 

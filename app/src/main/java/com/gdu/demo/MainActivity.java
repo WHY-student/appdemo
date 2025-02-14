@@ -131,12 +131,14 @@ public class MainActivity extends Activity {
 
             @Override
             public void onProductDisconnect() {
+                Log.d("onProductDisconnect", "onProductDisconnect: ");
                 refreshUI();
             }
 
             @Override
             public void onProductConnect(BaseProduct product) {
                 mProduct = product;
+                Log.d("onProductConnect", "onProductConnect: ");
                 refreshUI();
             }
 
@@ -179,6 +181,7 @@ public class MainActivity extends Activity {
     private void refreshUI(){
         Log.i(TAG, "refreshUI: in ");
         if (mProduct != null) {
+//            mProduct.isConnected();
             Log.i(TAG, "mProduct");
             runOnUiThread(new Runnable() {
                 @Override
