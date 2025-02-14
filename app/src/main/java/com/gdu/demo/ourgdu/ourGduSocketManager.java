@@ -17,7 +17,7 @@ public class ourGduSocketManager {
     public static final String a = "GduSocketManager";
     private static ourGduSocketManager b;
     private ourGduCESocket3 c;
-    private GduCommunication3 d;
+    private ourGduCommunication3 d;
 
     public static ourGduSocketManager getInstance() {
         if (b == null) {
@@ -42,7 +42,7 @@ public class ourGduSocketManager {
 //        ourGduCESocket3 var10003 = new ourGduCESocket3();
         //var10003.<init>();
         var10002.c = var1;
-        var10001.d = new GduCommunication3(var1);
+        var10001.d = new ourGduCommunication3(var1);
         var10000.b();
     }
 
@@ -66,7 +66,7 @@ public class ourGduSocketManager {
         GlobalVariable.UDP_SOCKET_IMG_PORT = 7078;
     }
 
-    public GduCommunication3 getCommunication() {
+    public ourGduCommunication3 getCommunication() {
         return this.d;
     }
 

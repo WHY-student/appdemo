@@ -55,7 +55,7 @@ public class ourGDUSDKManager{
     private Context d;
     private GduRCManager e;
     private ourGduSocketManager f;
-    private GduCommunication3 g;
+    private ourGduCommunication3 g;
 
     private GduSocketManager their_f;
     private GduCommunication3 their_g;
@@ -323,6 +323,7 @@ public class ourGDUSDKManager{
             public void onConnectDelay(boolean var1) {
                 GlobalVariable.wifiDelay = false;
                 GlobalVariable.connStateEnum = ConnStateEnum.Conn_Sucess;
+                GlobalVariable.sRCConnState = ConnStateEnum.Conn_Sucess;
                 ourGDUSDKManager.this.ourf();
                 Log.d("ourCall", "onConnectDelay: ");
             }

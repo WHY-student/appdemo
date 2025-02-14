@@ -1313,27 +1313,15 @@ public class ourGduCommunication3 {
         var10000.a.sendMsg3(var1, (short)17, (byte)1, (byte)13, (byte)1, (byte)0, var4);
     }
 
-    public void synTime(SocketCallBack3 var1) {
-        ourGduCommunication3 var10000 = this;
-        Calendar var5;
-        Calendar var10001 = var5 = Calendar.getInstance();
-        int var2 = var10001.get(15);
-        int var3 = var10001.get(16);
-        byte[] var4;
-        byte[] var7 = var4 = new byte[16];
-        System.arraycopy(ByteUtilsLowBefore.long2byte(var5.getTimeInMillis()), 0, var4, 0, 8);
-        byte[] var6;
-        byte[] var10004 = var6 = ByteUtilsLowBefore.int2byte(var2 / '\uea60');
-        var4[8] = var6[0];
-        var4[9] = var6[1];
-        var4[10] = var6[2];
-        var4[11] = var10004[3];
-        byte[] var10002 = var6 = ByteUtilsLowBefore.int2byte(var3);
-        var4[12] = var6[0];
-        var4[13] = var6[1];
-        var4[14] = var6[2];
-        var7[15] = var10002[3];
-        var10000.a.sendMsg3(var1, (short)17, (byte)1, (byte)13, (byte)1, (byte)0, var4);
+    public void synTime(SocketCallBack3 socketCallBack3) {
+        Calendar calendar = Calendar.getInstance();
+        int i = calendar.get(15);
+        int i2 = calendar.get(16);
+        System.arraycopy(ByteUtilsLowBefore.long2byte(calendar.getTimeInMillis()), 0, new byte[16], 0, 8);
+        byte[] int2byte = ByteUtilsLowBefore.int2byte(i / 60000);
+        byte[] int2byte2 = ByteUtilsLowBefore.int2byte(i2);
+        byte[] bArr = {0, 0, 0, 0, 0, 0, 0, 0, int2byte[0], int2byte[1], int2byte[2], int2byte[3], int2byte2[0], int2byte2[1], int2byte2[2], int2byte2[3]};
+        this.a.sendMsg3(socketCallBack3, (short) 17, (byte) 1, (byte) 13, (byte) 1, (byte) 0, bArr);
     }
 
     public void updateBattery(SocketCallBack3 var1, String var2) {
