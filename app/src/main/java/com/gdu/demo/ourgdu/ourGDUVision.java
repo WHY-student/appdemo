@@ -97,6 +97,7 @@ public class ourGDUVision extends GDUVision {
         this.mGduCommunication3.addCycleACKCB(GduSocketConfig3.CYCLE_ACK_VISION_TRACK_NEW, socketCallBack32);
         this.mGduCommunication3.addCycleACKCB(GduSocketConfig3.CYCLE_ACK_MULTIPLE_TARGET_TRACK, socketCallBack33);
         this.mGduCommunication3.addCycleACKCB(GduSocketConfig3.CYCLE_ACK_MULTIPLE_TARGET_TRACK_NEW, socketCallBack33);
+        this.mGduCommunication3.addCycleACKCB(GduSocketConfig3.AI_BOX,socketCallBack33);
 
     }
 
