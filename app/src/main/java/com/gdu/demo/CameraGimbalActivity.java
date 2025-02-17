@@ -367,12 +367,21 @@ public class CameraGimbalActivity extends Activity implements TextureView.Surfac
                         if (list == null) {
                             toast("没有检测物体");
                         } else {
-                            toast("检测到物体");
-                            TargetMode mode = list.get(0);
-                            mode.getLeftX();
-                            mode.getLeftY();
-                            mode.getWidth();
-                            mode.getHeight();
+//                            toast("检测到物体");
+//                            TargetMode mode = list.get(0);
+                            List<DetectionBox> detectionInformationList = new ArrayList<>();
+                            for(TargetMode mode: list){
+                                DetectionBox objectDetectionBox = new DetectionBox();
+                                objectDetectionBox.setX(mode.getLeftX());
+                                objectDetectionBox.setY(mode.getLeftY());
+                                objectDetectionBox.setW(mode.getWidth());
+                                objectDetectionBox.setH(mode.getHeight());
+                                objectDetectionBox.setConfidence(mode.getTargetConfidence());
+                                objectDetectionBox.setLabelIndex(mode.getFlawType());
+                                detectionInformationList.add(objectDetectionBox);
+                            }
+
+                            panitView.setRectParams(detectionInformationList);
                         }
                     }
 

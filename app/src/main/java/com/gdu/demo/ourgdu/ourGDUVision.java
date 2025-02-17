@@ -23,6 +23,7 @@ import com.gdu.socketmodel.GduSocketConfig3;
 import com.gdu.util.ByteUtilsLowBefore;
 import com.gdu.util.RectUtil;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -102,6 +103,65 @@ public class ourGDUVision extends GDUVision {
         this.mGduCommunication3.addCycleACKCB(GduSocketConfig3.CYCLE_ACK_MULTIPLE_TARGET_TRACK_NEW, socketCallBack33);
         this.mGduCommunication3.addCycleACKCB(GduSocketConfig3.AI_BOX,socketCallBack33);
 
+    }
+
+    private TargetMode ourParseTargetModeNew(byte[] var1) {
+        TargetMode var10000 = new TargetMode();
+        //byte[] var10007 = var1;
+        //byte[] var10008 = var1;
+        //byte[] var10009 = var1;
+        byte[] var10010 = var1;
+
+        short var7 = ByteUtilsLowBefore.byte2short(var1, 0);
+        short var8 = ByteUtilsLowBefore.byte2short(var1, 2);
+        short var2 = ByteUtilsLowBefore.byte2short(var1, 4);
+        short var3 = ByteUtilsLowBefore.byte2short(var1, 6);
+        short var4 =ByteUtilsLowBefore.byte2short(var1,8);
+        int id =ByteUtilsLowBefore.byte2Int(var1,10);
+        //byte var4 = var10008[8];
+        //byte var5 = (byte)(var10007[9] & 1 & 255);
+        var10000.setHeight(var3);
+        var10000.setWidth(var2);
+        var10000.setLeftX(var7);
+        var10000.setLeftY(var8);
+        var10000.setTargetConfidence((short)var4);
+        //var10000.setFlawType(var5);
+        var10000.setId(id);
+        return var10000;
+    }
+
+    private void ourGetDetectTargetNew(byte[] var1) {
+        //int var2;
+        int startIndex=38;//待修改，可以根据解析的帧xiu
+        byte objectLength = var1[startIndex-2];
+        CopyOnWriteArrayList boxList = new CopyOnWriteArrayList();
+
+        if(var1.length>startIndex){
+
+
+            for(int index = 0; index < objectLength; ++index) {
+//                byte[] var7 = Arrays.copyOfRange(targetBox,var6*14,var6*14+14);
+                byte[] boxBytes = new byte[10];
+
+                for(int var8 = 0; var8 < 14; ++var8) {
+                    boxBytes[var8] = var1[index * 16 + var8 + startIndex];
+                }
+
+                boxList.add(this.ourParseTargetModeNew(boxBytes));
+            }
+        }
+
+        List var10;
+//        byte nowBox = 0;
+        if ((var10 = this.mTargetModeList) != null) {
+
+            var10.clear();
+            this.mTargetModeList.addAll(boxList);
+            OnTargetDetectListener var9;
+            if ((var9 = this.targetDetectListener) != null) {
+                var9.onTargetDetecting(boxList);
+            }
+        }
     }
 
     private void getDetectTargetNew(byte[] var1) {
