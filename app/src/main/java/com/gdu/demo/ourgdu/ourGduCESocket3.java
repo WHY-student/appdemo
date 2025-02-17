@@ -55,7 +55,7 @@ public class ourGduCESocket3 extends GduCESocket3 {
 
     private void ourGetDetectTargetNew(byte[] var1) {
         //int var2;
-        int startIndex=10;
+        int startIndex=10;//待修改，可以根据解析的帧xiu
         if(var1.length>startIndex){
             int desLength=var1.length-startIndex;
             byte[] targetBox = new byte[desLength];
@@ -65,8 +65,6 @@ public class ourGduCESocket3 extends GduCESocket3 {
 
             for(int var6 = 0; var6 < var4; ++var6) {
                 byte[] var7 =Arrays.copyOfRange(targetBox,var6*14,var6*14+14);
-
-
                 var5.add(this.ourParseTargetModeNew(var7));
             }
             Log.d("detection", String.format("%d", ((TargetMode) var5.get(0)).getLeftX()));
