@@ -131,6 +131,7 @@ public class ourGduCommunication3 {
 
     public boolean createSocket() {
         try {
+            Log.d("CreatS", "创建socket连接");
             return this.a.createSocket(this.f, this.h, this.g, this.i);
         } catch (Exception e) {
             e.printStackTrace();
