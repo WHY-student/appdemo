@@ -12,6 +12,7 @@ import com.gdu.demo.ourgdu.ourGduCommunication3;
 //import com.gdu.gdusocket.GduSocketManager;
 import com.gdu.demo.ourgdu.ourGduSocketManager;
 
+import com.gdu.gdusocket.GduSocketManager;
 import com.gdu.gdusocket.SocketCallBack3;
 import com.gdu.sdk.util.CommonCallbacks;
 import com.gdu.sdk.vision.GDUVision;
@@ -26,7 +27,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ourGDUVision extends GDUVision {
-    private ourGduCommunication3 mGduCommunication3;
+    private GduCommunication3 mGduCommunication3;
     private OnTargetDetectListener targetDetectListener;
     private OnTargetTrackListener targetTrackListener;
     private final List<TargetMode> mTargetModeList;
@@ -46,6 +47,7 @@ public class ourGDUVision extends GDUVision {
                 if (gduFrame3 == null || (r0 = gduFrame3.frameContent) == null) {
                     return;
                 }
+
                 try {
                     ourGDUVision.this.getDetectTargetNew(r0);
                 } catch (Exception exception) {
@@ -88,9 +90,10 @@ public class ourGDUVision extends GDUVision {
             }
         };
         this.multipleTargetTrackCb = socketCallBack33;
-        this.mGduCommunication3 = ourGduSocketManager.getInstance().getCommunication();
+        this.mGduCommunication3 = GduSocketManager.getInstance().getCommunication();
         this.mTargetModeList = new ArrayList();
         this.mGduCommunication3.addCycleACKCB(GduSocketConfig3.CYCLE_ACK_TARGET_DETECT, socketCallBack3);
+        this.mGduCommunication3.addCycleACKCB(42205240, socketCallBack3);
         this.mGduCommunication3.addCycleACKCB(GduSocketConfig3.CYCLE_ACK_TARGET_DETECT_NEW, socketCallBack3);
         this.mGduCommunication3.addCycleACKCB(GduSocketConfig3.CYCLE_ACK_FOUR_LIGHT_TARGET_DETECT, socketCallBack3);
         this.mGduCommunication3.addCycleACKCB(GduSocketConfig3.CYCLE_ACK_VISION_TRACK, socketCallBack32);
@@ -275,7 +278,7 @@ public class ourGDUVision extends GDUVision {
     }
 
     public void startTargetDetect(CommonCallbacks.CompletionCallback var1) {
-        ourGduCommunication3 var10000 = this.mGduCommunication3;
+        GduCommunication3 var10000 = this.mGduCommunication3;
         SocketCallBack3 var2 = (var1x, var2x) -> {
             if (var1 != null) {
                 if (var1x == 0) {
@@ -290,7 +293,7 @@ public class ourGDUVision extends GDUVision {
     }
 
     public void stopTargetDetect(CommonCallbacks.CompletionCallback var1) {
-        ourGduCommunication3 var10000 = this.mGduCommunication3;
+        GduCommunication3 var10000 = this.mGduCommunication3;
         SocketCallBack3 var2 = (var2x, var3) -> {
             if (var1 != null) {
                 if (var2x == 0) {
@@ -309,7 +312,7 @@ public class ourGDUVision extends GDUVision {
     }
 
     public void startSmartTrack(CommonCallbacks.CompletionCallback var1) {
-        ourGduCommunication3 var10000 = this.mGduCommunication3;
+        GduCommunication3 var10000 = this.mGduCommunication3;
         SocketCallBack3 var2 = (var2x, var3) -> {
             if (var1 != null) {
                 if (var2x == 0) {
@@ -337,7 +340,7 @@ public class ourGDUVision extends GDUVision {
             var6 = (Short)var10000.get(3);
         }
 
-        ourGduCommunication3 var12 = this.mGduCommunication3;
+        GduCommunication3 var12 = this.mGduCommunication3;
         short var9 = (short)var3;
         short var10 = (short)var4;
         short var11 = (short)var5;
@@ -356,7 +359,7 @@ public class ourGDUVision extends GDUVision {
     }
 
     public void stopSmartTrack(CommonCallbacks.CompletionCallback var1) {
-        ourGduCommunication3 var10000 = this.mGduCommunication3;
+        GduCommunication3 var10000 = this.mGduCommunication3;
         SocketCallBack3 var2 = (var1x, var2x) -> {
             if (var1 != null) {
                 if (var1x == 0) {
@@ -371,7 +374,7 @@ public class ourGDUVision extends GDUVision {
     }
 
     public void cancelSmartTrack(CommonCallbacks.CompletionCallback var1) {
-        ourGduCommunication3 var10000 = this.mGduCommunication3;
+        GduCommunication3 var10000 = this.mGduCommunication3;
         SocketCallBack3 var2 = (var1x, var2x) -> {
             if (var1 != null) {
                 if (var1x == 0) {

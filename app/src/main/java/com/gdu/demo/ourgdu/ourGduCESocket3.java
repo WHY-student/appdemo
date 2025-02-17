@@ -5,47 +5,26 @@ package com.gdu.demo.ourgdu;
 //
 
 import android.util.Log;
-import com.gdu.common.ConnStateEnum;
-import com.gdu.common.GlobalVariable;
-import com.gdu.drone.GimbalType;
+
 import com.gdu.drone.TargetMode;
-import com.gdu.gdusocket.GduImgUdpSocket;
-import com.gdu.gdusocket.SocketCallBack;
-import com.gdu.gdusocket.SocketCallBack3;
 import com.gdu.gdusocket.ce.GduCESocket3;
-import com.gdu.gdusocket.ce.IGduSocket;
 import com.gdu.gdusocket.util.GduFrameUtil3;
-import com.gdu.gdusocket.util.a;
-import com.gdu.gdusocket.util.b;
-import com.gdu.gdusocket.util.c;
-import com.gdu.gdusocket.util.d;
-import com.gdu.gdusocketmodel.GduFrame;
-import com.gdu.product.ComponentKey;
-import com.gdu.sdk.vision.OnTargetDetectListener;
 import com.gdu.socketmodel.GduFrame3;
-import com.gdu.socketmodel.GduSocketConfig3;
 import com.gdu.util.ByteUtilsLowBefore;
-import com.gdu.util.GimbalUtil;
-import com.gdu.util.XOR;
-import com.gdu.util.logs.RonLog;
-import com.gdu.util.logs.RonLog2File;
+
 import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.SocketException;
-import java.net.UnknownHostException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.LinkedBlockingDeque;
+import java.util.ArrayList;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 public class ourGduCESocket3 extends GduCESocket3 {
 
     private GduFrameUtil3 D = new GduFrameUtil3();
 //    private DatagramPacket i;
-
+    private ArrayList<Integer> cmdList = new ArrayList<>();
 
     private TargetMode parseTargetModeNew(byte[] var1) {
         TargetMode var10000 = new TargetMode();
@@ -113,9 +92,9 @@ public class ourGduCESocket3 extends GduCESocket3 {
     @Override
     public boolean handlerReceiveData(byte[] bArr, boolean z){
 
+
 //        Log.d("ReceiveData", String.format("handlerReceiveData: %s", new String(bArr)));
-
-
+//        this.H = 100;
 
         // 解析cmd
         int var6 = 14;
@@ -129,25 +108,40 @@ public class ourGduCESocket3 extends GduCESocket3 {
             ++var6;
         }
 
+//        try {
+//            this.printI();
+//        } catch (Exception e) {
+////            throw new RuntimeException(e);
+//        }
+
         if ((var6 += this.D.checkFrameHead3(bArr, 0, var3)) < 3) {
             Log.i("FrameHead", "get Data length Err:" + var6);
             return true;
         } else {
             short var7 = ByteUtilsLowBefore.byte2short(bArr, 8);
-            Log.i("NormalData", "start parse data: ");
+//            Log.i("NormalData", "start parse data: ");
 //            this.a(bArr, this.i.getOffset(), var6);
             GduFrame3 gduFrame3 = GduFrameUtil3.byteArrayToGduFrame3(bArr, 0, var6);
-            Log.i("frameCMD", "frameCMD : " + gduFrame3.frameCMD);
             try {
-                byte[] newbArr = gduFrame3.frameContent;
-                this.getDetectTargetNew(newbArr);
+                if (!cmdList.contains(gduFrame3.frameCMD)) {
+                    cmdList.add(gduFrame3.frameCMD);
+                    Log.i("frameCMD", "frameCMD : " + gduFrame3.frameCMD);
+
+                    byte[] newbArr = gduFrame3.frameContent;
+                    this.getDetectTargetNew(newbArr);
+//                    System.out.println(a);
+                }
             } catch (Exception e) {
-//                throw new RuntimeException(e);
+//              Log.d("gduFrame","解析数据失败");
             }
         }
 
 
         return super.handlerReceiveData(bArr, z);
+    }
+
+    private void f(){
+
     }
 }
 

@@ -245,6 +245,7 @@ public class ourGDUSDKManager{
                 ourGDUSDKManager.this.f();
                 RonLog2FileApi.getSingle().saveData("GduDroneApi====:onConnect===:" + ourGDUSDKManager.this.j);
                 RonLog.LogD(new String[]{"GduDroneApi====:onConnect===:" + ourGDUSDKManager.this.j});
+                Log.d("theirCall","GDUSDKManager onConnect");
             }
 
             public void onDisConnect() {
@@ -274,6 +275,7 @@ public class ourGDUSDKManager{
             }
 
             public void onComponentChange(ComponentKey var1) {
+//                Log.d("theirCall", "onComponentChange: ");
                 ourGDUSDKManager.this.a(var1);
             }
         });
@@ -290,6 +292,8 @@ public class ourGDUSDKManager{
 
             }
         });
+
+
         this.f.setConnectCallBack(new IGduSocket.OnConnectListener() {
             public void onConnect() {
                 ourGDUSDKManager.this.ourf();
@@ -303,7 +307,7 @@ public class ourGDUSDKManager{
                 RonLog.LogD(new String[]{"GduDroneApi====:onDisConnect===:" + ourGDUSDKManager.this.j});
                 Log.d("ourGDUSDKManager", "onDisConnect: ");
                 GlobalVariable.connStateEnum = ConnStateEnum.Conn_Sucess;
-                ourGDUSDKManager.this.f.startConnect();
+//
 //                if (ourGDUSDKManager.this.j) {
 //                    if (ourGDUSDKManager.this.h != null) {
 //                        ourGDUSDKManager.this.h.onProductDisconnect();
@@ -321,11 +325,12 @@ public class ourGDUSDKManager{
             }
 
             public void onConnectDelay(boolean var1) {
-                GlobalVariable.wifiDelay = false;
-                GlobalVariable.connStateEnum = ConnStateEnum.Conn_Sucess;
-                GlobalVariable.sRCConnState = ConnStateEnum.Conn_Sucess;
-                ourGDUSDKManager.this.ourf();
+//                GlobalVariable.wifiDelay = false;
+//                GlobalVariable.connStateEnum = ConnStateEnum.Conn_Sucess;
+//                GlobalVariable.sRCConnState = ConnStateEnum.Conn_Sucess;
+//                ourGDUSDKManager.this.ourf();
                 Log.d("ourCall", "onConnectDelay: ");
+
             }
 
             public void onConnectMore() {
@@ -335,7 +340,7 @@ public class ourGDUSDKManager{
             }
 
             public void onComponentChange(ComponentKey var1) {
-                Log.d("ourCall", "onComponentChange: ");
+//                Log.d("ourCall", "onComponentChange: ");
                 ourGDUSDKManager.this.a(var1);
             }
         });
@@ -500,23 +505,26 @@ public class ourGDUSDKManager{
                     }
                 });
             } else {
+
+//                ourGduSocketManager temp;
+//                if ((temp = this.f) == null) {
+//                    return;
+//                }
+//                try {
+//                    temp.startConnect();
+//                    Log.d("IMUInit", "ourGduSocketManager开始连接");
+//                }
+//                catch (Exception e){
+//                    Log.d("IMUInit", "ourGduSocketManager连接错误");
+//                }
+
+
                 GduSocketManager var1;
                 if ((var1 = this.their_f) == null) {
                     return;
                 }
 
                 var1.startConnect();
-                ourGduSocketManager temp;
-                if ((temp = this.f) == null) {
-                    return;
-                }
-                try {
-                    temp.startConnect();
-                    Log.d("IMUInit", "ourGduSocketManager开始连接");
-                }
-                catch (Exception e){
-                    Log.d("IMUInit", "ourGduSocketManager连接错误");
-                }
 
             }
 

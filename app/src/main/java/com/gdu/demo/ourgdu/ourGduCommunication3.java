@@ -99,19 +99,22 @@ public class ourGduCommunication3 {
     public ourGduCommunication3(ourGduCESocket3 var1) {
         this.a = var1;
         if (GlobalVariable.isRCSEE) {
-            this.f = "145.192.1.81";
-            this.g = 7077;
-            this.h = "145.192.1.81";
-            this.i = 7079;
+            this.f = GduSocketConfig3.RCSrcIpAdress;
+            this.g =  GduSocketConfig3.RC_DATA_SOCKET_SRC_PORT;
+            this.h = GduSocketConfig3.RCSrcIpAdress;
+            this.i = GduSocketConfig3.RC_DATA_SOCKET_DST_PORT;
+            Log.i("port", "GlobalVariable.isRCSEE");
         } else if (GlobalVariable.isCustomRC) {
-            this.f = "145.192.1.81";
-            this.g = 7079;
-            this.h = "145.192.1.81";
-            this.i = 7080;
+            this.f = GduSocketConfig3.RCSrcIpAdress;
+            this.g = GduSocketConfig3.CUSTOM_RC_DATA_SOCKET_SRC_PORT;
+            this.h = GduSocketConfig3.RCSrcIpAdress;
+            this.i = GduSocketConfig3.CUSTOM_RC_DATA_SOCKET_DST_PORT;
+            Log.i("port", "GlobalVariable.isCustomRC");
         } else {
-            this.f = "127.0.0.1";
-            this.h = "127.0.0.1";
+            this.f = GduSocketConfig3.IpAdress;
+            this.h = GduSocketConfig3.IpAdress;
             this.g = GlobalVariable.UDP_SOCKET_PORT;
+            Log.i("port", "else");
         }
 
     }

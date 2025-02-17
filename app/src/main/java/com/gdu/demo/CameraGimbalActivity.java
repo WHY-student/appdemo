@@ -166,8 +166,8 @@ public class CameraGimbalActivity extends Activity implements TextureView.Surfac
         initView();
         initData();
         initListener();
-        Mqtt_init();
-        startReconnect();
+//        Mqtt_init();
+//        startReconnect();
 
 //        timeShow();
 
