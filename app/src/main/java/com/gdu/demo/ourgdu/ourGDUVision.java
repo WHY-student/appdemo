@@ -90,11 +90,32 @@ public class ourGDUVision extends GDUVision {
                 ourGDUVision.this.getTrackResult(b3, s, s2, s3, s4);
             }
         };
+
+        SocketCallBack3 ourSocketCallBack3 = new SocketCallBack3() { // from class: com.gdu.sdk.vision.GDUVision.1
+            /* JADX WARN: Multi-variable type inference failed */
+            /* JADX WARN: Type inference failed for: r0v2, types: [byte[]] */
+            /* JADX WARN: Type inference failed for: r0v3, types: [java.lang.Exception] */
+            /* JADX WARN: Type inference failed for: r0v8, types: [com.gdu.sdk.vision.GDUVision] */
+            @Override // com.gdu.gdusocket.SocketCallBack3
+            public void callBack(byte b, GduFrame3 gduFrame3) {
+                byte[] r0;
+                if (gduFrame3 == null || (r0 = gduFrame3.frameContent) == null) {
+                    return;
+                }
+
+                try {
+                    ourGDUVision.this.ourGetDetectTargetNew(r0);
+                } catch (Exception exception) {
+                    Log.i("获取监测目标出错", exception.toString());
+                }
+            }
+        };
+
         this.multipleTargetTrackCb = socketCallBack33;
         this.mGduCommunication3 = GduSocketManager.getInstance().getCommunication();
         this.mTargetModeList = new ArrayList();
         this.mGduCommunication3.addCycleACKCB(GduSocketConfig3.CYCLE_ACK_TARGET_DETECT, socketCallBack3);
-        this.mGduCommunication3.addCycleACKCB(42205240, socketCallBack3);
+        this.mGduCommunication3.addCycleACKCB(42205240, ourSocketCallBack3);
         this.mGduCommunication3.addCycleACKCB(GduSocketConfig3.CYCLE_ACK_TARGET_DETECT_NEW, socketCallBack3);
         this.mGduCommunication3.addCycleACKCB(GduSocketConfig3.CYCLE_ACK_FOUR_LIGHT_TARGET_DETECT, socketCallBack3);
         this.mGduCommunication3.addCycleACKCB(GduSocketConfig3.CYCLE_ACK_VISION_TRACK, socketCallBack32);
