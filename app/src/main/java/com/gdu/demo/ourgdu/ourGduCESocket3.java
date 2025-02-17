@@ -13,6 +13,8 @@ import com.gdu.socketmodel.GduFrame3;
 import com.gdu.util.ByteUtilsLowBefore;
 
 import java.net.DatagramPacket;
+import java.sql.Array;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.ArrayList;
@@ -26,31 +28,50 @@ public class ourGduCESocket3 extends GduCESocket3 {
 //    private DatagramPacket i;
     private ArrayList<Integer> cmdList = new ArrayList<>();
 
-    private TargetMode parseTargetModeNew(byte[] var1) {
+    private TargetMode ourParseTargetModeNew(byte[] var1) {
         TargetMode var10000 = new TargetMode();
-        byte[] var10007 = var1;
-        byte[] var10008 = var1;
-        byte[] var10009 = var1;
+        //byte[] var10007 = var1;
+        //byte[] var10008 = var1;
+        //byte[] var10009 = var1;
         byte[] var10010 = var1;
 
         short var7 = ByteUtilsLowBefore.byte2short(var1, 0);
         short var8 = ByteUtilsLowBefore.byte2short(var1, 2);
-        short var2 = ByteUtilsLowBefore.byte2short(var10010, 4);
-        short var3 = ByteUtilsLowBefore.byte2short(var10009, 6);
-        byte var4 = var10008[8];
-        byte var5 = (byte)(var10007[9] & 1 & 255);
+        short var2 = ByteUtilsLowBefore.byte2short(var1, 4);
+        short var3 = ByteUtilsLowBefore.byte2short(var1, 6);
+        short var4 =ByteUtilsLowBefore.byte2short(var1,8);
+        int id =ByteUtilsLowBefore.byte2Int(var1,10);
+        //byte var4 = var10008[8];
+        //byte var5 = (byte)(var10007[9] & 1 & 255);
         var10000.setHeight(var3);
         var10000.setWidth(var2);
         var10000.setLeftX(var7);
         var10000.setLeftY(var8);
         var10000.setTargetConfidence((short)var4);
-        var10000.setFlawType(var5);
+        //var10000.setFlawType(var5);
+        var10000.setId(id);
         return var10000;
     }
 
-    private void getDetectTargetNew(byte[] var1) {
-        int var2;
-        if ((var2 = var1.length) >= 3) {
+    private void ourGetDetectTargetNew(byte[] var1) {
+        //int var2;
+        int startIndex=10;
+        if(var1.length>startIndex){
+            int desLength=var1.length-startIndex;
+            byte[] targetBox = new byte[desLength];
+            System.arraycopy(var1,startIndex,targetBox,0,desLength);
+            int var4=desLength/14;
+            CopyOnWriteArrayList var5 = new CopyOnWriteArrayList();
+
+            for(int var6 = 0; var6 < var4; ++var6) {
+                byte[] var7 =Arrays.copyOfRange(targetBox,var6*14,var6*14+14);
+
+
+                var5.add(this.ourParseTargetModeNew(var7));
+            }
+            Log.d("detection", String.format("%d", ((TargetMode) var5.get(0)).getLeftX()));
+
+        /*if ((var2 = var1.length) >= 3) {
             int var10000 = var2 - 2;
             int var10002 = var2 - 2;
             byte var10001 = var1[var2 - 2];
@@ -71,7 +92,7 @@ public class ourGduCESocket3 extends GduCESocket3 {
 
                 var5.add(this.parseTargetModeNew(var7));
             }
-            Log.d("detection", String.format("%d", ((TargetMode) var5.get(0)).getLeftX()));
+            Log.d("detection", String.format("%d", ((TargetMode) var5.get(0)).getLeftX()));*/
 
 //            List var10;
 //            if ((var10 = this.mTargetModeList) != null) {
@@ -128,7 +149,7 @@ public class ourGduCESocket3 extends GduCESocket3 {
                     Log.i("frameCMD", "frameCMD : " + gduFrame3.frameCMD);
 
                     byte[] newbArr = gduFrame3.frameContent;
-                    this.getDetectTargetNew(newbArr);
+                    this.ourGetDetectTargetNew(newbArr);
 //                    System.out.println(a);
                 }
             } catch (Exception e) {
