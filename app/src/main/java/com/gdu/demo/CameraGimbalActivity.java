@@ -171,81 +171,81 @@ public class CameraGimbalActivity extends Activity implements TextureView.Surfac
 
 //        timeShow();
 
-        handler = new Handler(Looper.myLooper()) {
-            @SuppressLint("SetTextI18n")
-            public void handleMessage(Message msg) {
-                try {
-                    super.handleMessage(msg);
-                    switch (msg.what) {
-                        case 1: //开机校验更新回传
-                            break;
-                        case 2:  // 反馈回传
-
-                            break;
-                        case 3:  //MQTT 收到消息回传   UTF8Buffer msg=new UTF8Buffer(object.toString());
-
-//                        System.out.println(msg.obj.toString());   // 显示MQTT数据
-                            try {
-                                ObjectMapper objectMapper = new ObjectMapper();
-
-                                TargetBox targetBoxString = objectMapper.readValue(msg.obj.toString(), TargetBox.class);
-
-                                String encode = targetBoxString.getPayload();
-
-                                String decode = new String(android.util.Base64.decode(encode, android.util.Base64.DEFAULT));
-
-//                            Toast.makeText(mContext, "output1", Toast.LENGTH_SHORT).show();
-                                DetectionInformation detectionInformation = objectMapper.readValue(decode, DetectionInformation.class);
-//                            Toast.makeText(mContext, "output2", Toast.LENGTH_SHORT).show();
-//                            String output = "";
-                                panitView.setRectParams(detectionInformation.getDetections());
-//                            for (DetectionBox detection : detectionInformation.getDetections()) {
-//                                // 读取每个字段的值
-//                                int x = detection.getX();
-//                                int y = detection.getY();
-//                                int w = detection.getW();
-//                                int h = detection.getH();
-//                                int confidence = detection.getConfidence();
-//                                int labelIndex = detection.getLabelIndex();
-//                                int modelID = detection.getModelID();
+//        handler = new Handler(Looper.myLooper()) {
+//            @SuppressLint("SetTextI18n")
+//            public void handleMessage(Message msg) {
+//                try {
+//                    super.handleMessage(msg);
+//                    switch (msg.what) {
+//                        case 1: //开机校验更新回传
+//                            break;
+//                        case 2:  // 反馈回传
 //
-//                                // 打印或处理这些值
-////                                System.out.println("Detection:");
-////                                System.out.println("X: " + x);
-////                                System.out.println("Y: " + y);
-////                                System.out.println("Width: " + w);
-////                                System.out.println("Height: " + h);
-////                                System.out.println("Confidence: " + confidence);
-////                                System.out.println("Label Index: " + labelIndex);
-////                                System.out.println("Model ID: " + modelID);
-//                                output = output + String.format("x: %d, y: %d, w: %d, h: %d, conf: %d, label: %d, model_id: %d \n", x, y, w, h, confidence, labelIndex, modelID);
+//                            break;
+//                        case 3:  //MQTT 收到消息回传   UTF8Buffer msg=new UTF8Buffer(object.toString());
+//
+////                        System.out.println(msg.obj.toString());   // 显示MQTT数据
+//                            try {
+//                                ObjectMapper objectMapper = new ObjectMapper();
+//
+//                                TargetBox targetBoxString = objectMapper.readValue(msg.obj.toString(), TargetBox.class);
+//
+//                                String encode = targetBoxString.getPayload();
+//
+//                                String decode = new String(android.util.Base64.decode(encode, android.util.Base64.DEFAULT));
+//
+////                            Toast.makeText(mContext, "output1", Toast.LENGTH_SHORT).show();
+//                                DetectionInformation detectionInformation = objectMapper.readValue(decode, DetectionInformation.class);
+////                            Toast.makeText(mContext, "output2", Toast.LENGTH_SHORT).show();
+////                            String output = "";
+////                                panitView.setRectParams(detectionInformation.getDetections());
+////                            for (DetectionBox detection : detectionInformation.getDetections()) {
+////                                // 读取每个字段的值
+////                                int x = detection.getX();
+////                                int y = detection.getY();
+////                                int w = detection.getW();
+////                                int h = detection.getH();
+////                                int confidence = detection.getConfidence();
+////                                int labelIndex = detection.getLabelIndex();
+////                                int modelID = detection.getModelID();
+////
+////                                // 打印或处理这些值
+//////                                System.out.println("Detection:");
+//////                                System.out.println("X: " + x);
+//////                                System.out.println("Y: " + y);
+//////                                System.out.println("Width: " + w);
+//////                                System.out.println("Height: " + h);
+//////                                System.out.println("Confidence: " + confidence);
+//////                                System.out.println("Label Index: " + labelIndex);
+//////                                System.out.println("Model ID: " + modelID);
+////                                output = output + String.format("x: %d, y: %d, w: %d, h: %d, conf: %d, label: %d, model_id: %d \n", x, y, w, h, confidence, labelIndex, modelID);
+////                            }
+////                            Toast.makeText(mContext, "output: " + output, Toast.LENGTH_SHORT).show();
+//                            } catch (Exception e) {
+//                                Toast.makeText(mContext, "解码Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
 //                            }
-//                            Toast.makeText(mContext, "output: " + output, Toast.LENGTH_SHORT).show();
-                            } catch (Exception e) {
-                                Toast.makeText(mContext, "解码Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                            }
-                            break;
-                        case 30:  //连接失败
-                            Toast.makeText(mContext, "连接失败", Toast.LENGTH_SHORT).show();
-                            break;
-                        case 31:   //连接成功
-                            Toast.makeText(mContext, "连接成功", Toast.LENGTH_SHORT).show();
-                            try {
-                                client.subscribe(mqtt_sub_topic, 1);
-                                Toast.makeText(mContext, "订阅成功", Toast.LENGTH_SHORT).show();
-                            } catch (MqttException e) {
-                                e.printStackTrace();
-                                Toast.makeText(mContext, "订阅失败", Toast.LENGTH_SHORT).show();
-                            }
-                            break;
-                        default:
-                            break;
-                    }
-                }catch (Exception e){
-                    Toast.makeText(mContext, "消息处理 Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                }
-            }
-        };
+//                            break;
+//                        case 30:  //连接失败
+//                            Toast.makeText(mContext, "连接失败", Toast.LENGTH_SHORT).show();
+//                            break;
+//                        case 31:   //连接成功
+//                            Toast.makeText(mContext, "连接成功", Toast.LENGTH_SHORT).show();
+//                            try {
+//                                client.subscribe(mqtt_sub_topic, 1);
+//                                Toast.makeText(mContext, "订阅成功", Toast.LENGTH_SHORT).show();
+//                            } catch (MqttException e) {
+//                                e.printStackTrace();
+//                                Toast.makeText(mContext, "订阅失败", Toast.LENGTH_SHORT).show();
+//                            }
+//                            break;
+//                        default:
+//                            break;
+//                    }
+//                }catch (Exception e){
+//                    Toast.makeText(mContext, "消息处理 Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+//                }
+//            }
+//        };
         /* -------------------------------------------------------------------------------------- */
 
 
@@ -341,8 +341,8 @@ public class CameraGimbalActivity extends Activity implements TextureView.Surfac
                         float hei=flightControllerState.getUltrasonicHeightInMeters();
                         //LocationCoordinate3D  flyInf=flightControllerState.getAircraftLocation();
                         //float hei=flyInf.getAltitude();
-                        show(horizenDis, String.format("飞行距离：%.3fcm", dis));
-                        show(vercalDis, String.format("飞行高度:%.3fcm", hei));
+                        show(horizenDis, String.format("飞行距离：%.3fm", dis));
+                        show(vercalDis, String.format("飞行高度:%.3fm", hei));
                         show(horizenV, String.format("水平飞行速度：%.3fcm/s", ver));
                         show(vercalV, String.format("垂直飞行速度%.3fcm/s", z_ver));
                     }catch (Exception e){
@@ -369,19 +369,19 @@ public class CameraGimbalActivity extends Activity implements TextureView.Surfac
                         } else {
 //                            toast("检测到物体");
 //                            TargetMode mode = list.get(0);
-                            List<DetectionBox> detectionInformationList = new ArrayList<>();
-                            for(TargetMode mode: list){
-                                DetectionBox objectDetectionBox = new DetectionBox();
-                                objectDetectionBox.setX(mode.getLeftX());
-                                objectDetectionBox.setY(mode.getLeftY());
-                                objectDetectionBox.setW(mode.getWidth());
-                                objectDetectionBox.setH(mode.getHeight());
-                                objectDetectionBox.setConfidence(mode.getTargetConfidence());
-                                objectDetectionBox.setLabelIndex(mode.getFlawType());
-                                detectionInformationList.add(objectDetectionBox);
-                            }
+//                            List<DetectionBox> detectionInformationList = new ArrayList<>();
+//                            for(TargetMode mode: list){
+//                                DetectionBox objectDetectionBox = new DetectionBox();
+//                                objectDetectionBox.setX(mode.getLeftX());
+//                                objectDetectionBox.setY(mode.getLeftY());
+//                                objectDetectionBox.setW(mode.getWidth());
+//                                objectDetectionBox.setH(mode.getHeight());
+//                                objectDetectionBox.setConfidence(mode.getTargetConfidence());
+//                                objectDetectionBox.setLabelIndex(mode.getFlawType());
+//                                detectionInformationList.add(objectDetectionBox);
+//                            }
 
-                            panitView.setRectParams(detectionInformationList);
+                            panitView.setRectParams(list);
                         }
                     }
 
@@ -920,46 +920,46 @@ public class CameraGimbalActivity extends Activity implements TextureView.Surfac
                 break;
             case R.id.ai_recognize:
 
-                gduVision.setOnTargetTrackListener(new OnTargetTrackListener() {
-                       @Override
-                       public void onTargetDetecting(List<TargetMode> list) {
-                           toast("获取到物体");
-                       }
-
-                       @Override
-                       public void onTargetTracking(TargetMode targetMode) {
-                            toast("正在跟踪物体");
-                       }
-
-                       @Override
-                       public void onTargetTrackFailed(int i) {
-
-                       }
-
-                       @Override
-                       public void onTargetTrackStart() {
-
-                       }
-
-                       @Override
-                       public void onTargetTrackStop() {
-
-                       }
-
-                       @Override
-                       public void onTargetTrackModelClose() {
-
-                       }
-                   }
-                );
-                gduVision.startSmartTrack(gduError ->{
-                    if (gduError!=null){
-                        toast("目标跟踪启动出现错误");
-                    }
-                    else{
-                        toast("目标跟踪顺利启动");
-                    }
-                });
+//                gduVision.setOnTargetTrackListener(new OnTargetTrackListener() {
+//                       @Override
+//                       public void onTargetDetecting(List<TargetMode> list) {
+//                           toast("获取到物体");
+//                       }
+//
+//                       @Override
+//                       public void onTargetTracking(TargetMode targetMode) {
+//                            toast("正在跟踪物体");
+//                       }
+//
+//                       @Override
+//                       public void onTargetTrackFailed(int i) {
+//
+//                       }
+//
+//                       @Override
+//                       public void onTargetTrackStart() {
+//
+//                       }
+//
+//                       @Override
+//                       public void onTargetTrackStop() {
+//
+//                       }
+//
+//                       @Override
+//                       public void onTargetTrackModelClose() {
+//
+//                       }
+//                   }
+//                );
+//                gduVision.startSmartTrack(gduError ->{
+//                    if (gduError!=null){
+//                        toast("目标跟踪启动出现错误");
+//                    }
+//                    else{
+//                        toast("目标跟踪顺利启动");
+//                    }
+//                });
 //
 //
 //                gduVision.setOnTargetDetectListener(new OnTargetDetectListener() {
@@ -1008,14 +1008,14 @@ public class CameraGimbalActivity extends Activity implements TextureView.Surfac
 //                });
                 break;
             case R.id.quit_airecognize:
-                gduVision.stopSmartTrack(gduError -> {
-                    if (gduError!=null){
-                        toast("目标跟踪终止出现错误");
-                    }
-                    else{
-                        toast("目标跟踪顺利终止");
-                    }
-                });
+//                gduVision.stopSmartTrack(gduError -> {
+//                    if (gduError!=null){
+//                        toast("目标跟踪终止出现错误");
+//                    }
+//                    else{
+//                        toast("目标跟踪顺利终止");
+//                    }
+//                });
 //                gduVision.stopTargetDetect(gduError -> {
 //                    if (gduError!=null){
 //                        toast("目标识别终止出现错误");

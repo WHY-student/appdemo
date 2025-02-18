@@ -54,11 +54,9 @@ public class ourGDUSDKManager{
     private ourGDUAircraft gduaircraft;
     private Context d;
     private GduRCManager e;
-    private ourGduSocketManager f;
-    private ourGduCommunication3 g;
+    private GduSocketManager f;
+    private GduCommunication3 g;
 
-    private GduSocketManager their_f;
-    private GduCommunication3 their_g;
     private ourGDUSDKManager.SDKManagerCallback h;
     private boolean i;
     private boolean j;
@@ -100,9 +98,9 @@ public class ourGDUSDKManager{
         if (this.a() != null) {
             this.a().isUsbHadBreak(var1 ^ true);
         }
-        if(this.oura()!=null){
-            this.oura().isUsbHadBreak(var1 ^ true);
-        }
+//        if(this.oura()!=null){
+//            this.oura().isUsbHadBreak(var1 ^ true);
+//        }
 
         if (var1) {
             GlobalVariable.RC_usb_hadConn = 1;
@@ -188,14 +186,10 @@ public class ourGDUSDKManager{
     }
 
     private GduCESocket3 a() {
-        ourGduSocketManager var1;
+        GduSocketManager var1;
         return (var1 = this.f) != null && var1.getGduCESocket() != null ? this.f.getGduCESocket() : null;
     }
 
-    private GduCESocket3 oura(){
-        GduSocketManager var1;
-        return (var1 = this.their_f) != null && var1.getGduCESocket() != null ? this.their_f.getGduCESocket() : null;
-    }
     private void b() {
 
         if (b == null) {
@@ -220,11 +214,9 @@ public class ourGDUSDKManager{
         if ((var1 = this.d) != null) {
             this.e = GduRCManager.getInstance(var1);
         }
-        GduSocketManager temp;
-        this.their_f=temp=GduSocketManager.getInstance();
-        this.their_g=temp.getCommunication();
-        ourGduSocketManager var4;
-        this.f = var4 = ourGduSocketManager.getInstance();
+
+        GduSocketManager var4;
+        this.f = var4 = GduSocketManager.getInstance();
         this.g = var4.getCommunication();
         ourGDUAircraft var5;
         ourGDUAircraft var10000 = var5 = new ourGDUAircraft();
@@ -240,7 +232,7 @@ public class ourGDUSDKManager{
     }
 
     private void e() {
-        this.their_f.setConnectCallBack(new IGduSocket.OnConnectListener() {
+        this.f.setConnectCallBack(new IGduSocket.OnConnectListener() {
             public void onConnect() {
                 ourGDUSDKManager.this.f();
                 RonLog2FileApi.getSingle().saveData("GduDroneApi====:onConnect===:" + ourGDUSDKManager.this.j);
@@ -279,71 +271,6 @@ public class ourGDUSDKManager{
                 ourGDUSDKManager.this.a(var1);
             }
         });
-        this.their_f.getGduCESocket().setACDataReceivedListener(new IGduSocket.OnDataReceivedListener() {
-            public void onDataReceived(Object var1) {
-                if (!ourGDUSDKManager.this.j) {
-                    ourGDUSDKManager.this.j = true;
-                    if (ourGDUSDKManager.this.gduaircraft == null) {
-                        ourGDUSDKManager.this.gduaircraft = new ourGDUAircraft();
-                    }
-
-                    ourGDUSDKManager.this.h.onProductConnect(ourGDUSDKManager.this.gduaircraft);
-                }
-
-            }
-        });
-
-
-        this.f.setConnectCallBack(new IGduSocket.OnConnectListener() {
-            public void onConnect() {
-                ourGDUSDKManager.this.ourf();
-                RonLog2FileApi.getSingle().saveData("GduDroneApi====:onConnect===:" + ourGDUSDKManager.this.j);
-                RonLog.LogD(new String[]{"GduDroneApi====:onConnect===:" + ourGDUSDKManager.this.j});
-                Log.d("ourCall", "onConnect: ");
-            }
-
-            public void onDisConnect() {
-                RonLog2FileApi.getSingle().saveData("GduDroneApi====:onDisConnect===:" + ourGDUSDKManager.this.j);
-                RonLog.LogD(new String[]{"GduDroneApi====:onDisConnect===:" + ourGDUSDKManager.this.j});
-                Log.d("ourGDUSDKManager", "onDisConnect: ");
-                GlobalVariable.connStateEnum = ConnStateEnum.Conn_Sucess;
-//
-//                if (ourGDUSDKManager.this.j) {
-//                    if (ourGDUSDKManager.this.h != null) {
-//                        ourGDUSDKManager.this.h.onProductDisconnect();
-//                    }
-//
-//                    ourGDUSDKManager.this.j = false;
-//                    ourGDUSDKManager.this.e.disconnect();
-//                    ourGDUSDKManager.this.e.closeConnect();
-//                    ourGDUSDKManager.this.p = false;
-//                    ourGDUSDKManager.this.q = false;
-//                    ourGDUSDKManager.this.r = false;
-//                    ourGDUSDKManager.this.t = false;
-//                    ourGDUSDKManager.this.u = false;
-//                }
-            }
-
-            public void onConnectDelay(boolean var1) {
-//                GlobalVariable.wifiDelay = false;
-//                GlobalVariable.connStateEnum = ConnStateEnum.Conn_Sucess;
-//                GlobalVariable.sRCConnState = ConnStateEnum.Conn_Sucess;
-//                ourGDUSDKManager.this.ourf();
-                Log.d("ourCall", "onConnectDelay: ");
-
-            }
-
-            public void onConnectMore() {
-                Log.d("ourCall", "onConnectMore: ");
-
-                ourGDUSDKManager.this.j = false;
-            }
-
-            public void onComponentChange(ComponentKey var1) {
-//                Log.d("ourCall", "onComponentChange: ");
-                ourGDUSDKManager.this.a(var1);
-            }
-        });
         this.f.getGduCESocket().setACDataReceivedListener(new IGduSocket.OnDataReceivedListener() {
             public void onDataReceived(Object var1) {
                 if (!ourGDUSDKManager.this.j) {
@@ -351,9 +278,6 @@ public class ourGDUSDKManager{
                     if (ourGDUSDKManager.this.gduaircraft == null) {
                         ourGDUSDKManager.this.gduaircraft = new ourGDUAircraft();
                     }
-
-                    Log.d("ourGDUSDKManager", "onConnect: ");
-
 
                     ourGDUSDKManager.this.h.onProductConnect(ourGDUSDKManager.this.gduaircraft);
                 }
@@ -428,14 +352,10 @@ public class ourGDUSDKManager{
     }
 
     private void f() {
-        this.their_g.synTime((var0, var1) -> {
-        });
-    }
-
-    private void ourf() {
         this.g.synTime((var0, var1) -> {
         });
     }
+
 
     public BaseProduct getProduct() {
         if (this.gduaircraft == null) {
@@ -488,15 +408,6 @@ public class ourGDUSDKManager{
                             Log.d("this.fsocket", "开启this.fsocket通信: ");
                             ourGDUSDKManager.this.f.startConnect();
                         }
-                        if (ourGDUSDKManager.this.their_f != null) {
-                            ourGDUSDKManager.this.i = true;
-                            GlobalVariable.RC_usb_hadConn = 1;
-                            GlobalVariable.connType = ConnType.MGP03_RC_USB;
-                            RonLog2FileApi.getSingle().saveData("开启socket通信");
-                            RonLog.LogD(new String[]{"开启socket通信"});
-                            Log.d("this.their_f socket", "开启this.their_f socket通信: ");
-                            ourGDUSDKManager.this.their_f.startConnect();
-                        }
                     }
 
                     public void closeUsbModel() {
@@ -520,7 +431,7 @@ public class ourGDUSDKManager{
 
 
                 GduSocketManager var1;
-                if ((var1 = this.their_f) == null) {
+                if ((var1 = this.f) == null) {
                     return;
                 }
 

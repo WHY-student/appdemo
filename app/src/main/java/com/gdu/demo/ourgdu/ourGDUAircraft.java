@@ -675,45 +675,9 @@ public class ourGDUAircraft extends BaseProduct {
 
     public void getProductSN(final CommonCallbacks.CompletionCallbackWith<String> var1) {
         if (TextUtils.isEmpty(GlobalVariable.SN)) {
-            ourGduSocketManager.getInstance().getCommunication().getUnique(new SocketCallBack3() {
-                public void callBack(byte var1x, GduFrame3 var2) {
-                    Log.d("newCALL","newCall");
-                    CommonCallbacks.CompletionCallbackWith var3;
-                    byte[] var4;
-                    if (var1x == 0 && var2 != null && (var4 = var2.frameContent) != null && var4.length >= 17) {
-                        byte[] var6;
-                        if (var4.length > 19) {
-                            var6 = new byte[20];
-                        } else {
-                            var6 = new byte[17];
-                        }
-
-                        byte[] var10000 = var4;
-//                        var1x = var4.length - 2;
-
-//                        System.arraycopy(var4, 2, var1x, 0, var4.length - 2);
-
-                        System.arraycopy(var10000, 2, var6, 0, var4.length - 2);
-                        String var5;
-                        String var7 = var5 = new String(var6);
-                        if (!var7.contains("GDU") && var5.length() == 20) {
-                            var5 = var5.substring(0, 17);
-                        }
-
-                        GlobalVariable.SN = var5;
-                        if ((var3 = var1) != null) {
-                            var3.onSuccess(var5);
-                        }
-                    } else if ((var3 = var1) != null) {
-                        var3.onFailure(GDUError.TIMEOUT);
-                    }
-
-                }
-            });
 
             GduSocketManager.getInstance().getCommunication().getUnique(new SocketCallBack3() {
                 public void callBack(byte var1x, GduFrame3 var2) {
-                    Log.d("newCALL","newCall");
                     CommonCallbacks.CompletionCallbackWith var3;
                     byte[] var4;
                     if (var1x == 0 && var2 != null && (var4 = var2.frameContent) != null && var4.length >= 17) {

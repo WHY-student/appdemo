@@ -5,11 +5,14 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
+import android.os.Handler;
 import android.util.AttributeSet;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatImageView;
+
+import com.gdu.drone.TargetMode;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -21,7 +24,7 @@ import java.util.ListIterator;
 
 public class PaintView extends AppCompatImageView {
 
-    List<DetectionBox> detectionBox = new ArrayList<>();
+    List<TargetMode> detectionBox = new ArrayList<>();
     List<String> class_label = new ArrayList<>();
     {
         class_label.add("car");
@@ -31,9 +34,33 @@ public class PaintView extends AppCompatImageView {
         class_label.add("unknown");
     }
 //    private String text = "Sample Text";
+    private Handler handler;
 
     public PaintView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
+
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                while (true) {
+//                    try {
+//
+//                        // 在后台线程中更新数据后，通知UI线程重绘
+//                        handler.post(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                PaintView.this.invalidate();  // 触发视图重绘
+//                            }
+//                        });
+//
+//                        // 等待一段时间后继续执行
+//                        Thread.sleep(30);
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }
+//        }).start();
     }
 
     Paint paint = new Paint();
@@ -49,76 +76,40 @@ public class PaintView extends AppCompatImageView {
     {
         paint2.setAntiAlias(true);//用于防止边缘的锯齿
         paint2.setColor(Color.RED);//设置颜色
-//        paint2.setStyle(Paint.Style.STROKE);//设置样式为空心矩形
         paint2.setStrokeWidth(3f);//设置空心矩形边框的宽度
         paint2.setTextSize(40f);
-//        paint.setFakeBoldText(false);
-//        paint.setTypeface(Typeface.DEFAULT);
         paint2.setAlpha(1000);//设置透明度
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        for (DetectionBox detection : this.detectionBox) {
-            int x = detection.getX();
-            int y = detection.getY();
-            int maxX = x + detection.getW();
-            int maxY = y + detection.getH();
-            String label = detection.getLabelName();
+        for (TargetMode detection : this.detectionBox) {
+            int x = detection.getLeftX();
+            int y = detection.getLeftY();
+            int maxX = x + detection.getWidth();
+            int maxY = y + detection.getHeight();
+            String label = null;
             if(label==null){
-                label = ""+detection.getLabelIndex();
+                int labelindex = detection.getFlawType();
+                if(labelindex==-1){
+                    label = "unknown";
+                } else if (labelindex > 4) {
+                    label = "test";
+                }else {
+                    label = class_label.get(labelindex);
+                }
             }
-//            if(labelIndex < 0){
-//                label = "unknown";
-//            }
-//            else {
-//                label = class_label.get(labelIndex);
-//            }
             if (x >= 0 && y >= 0 && maxX < 1920 && maxY < 1080) {
                 canvas.drawRect(new Rect(x, y, maxX, maxY), paint);//绘制矩形，并设置矩形框显示的位置
-                canvas.drawText(label, detection.getX(), detection.getY() - 5, paint2);
+                canvas.drawText(label, detection.getLeftX(), detection.getLeftY() - 5, paint2);
             }
-            //            canvas.drawRect(new Rect(100,100,200,200), paint);//绘制矩形，并设置矩形框显示的位置
         }
-//        System.out.println("绘制成功");
-//        canvas.drawRect(new Rect(100,100,200,200), paint);//绘制矩形，并设置矩形框显示的位置
-//        canvas.drawRect(new Rect(100,100,200,200), paint);//绘制矩形，并设置矩形框显示的位置
     }
 
-    public void setRectParams(List<DetectionBox> detectionBox) {
+    public void setRectParams(List<TargetMode> detectionBox) {
         this.detectionBox = detectionBox;
-//        String output = "";
-//        for (DetectionBox detection : this.detectionBox) {
-//            // 读取每个字段的值
-//            int x = detection.getX();
-//            int y = detection.getY();
-//            int w = detection.getW();
-//            int h = detection.getH();
-//            int confidence = detection.getConfidence();
-//            int labelIndex = detection.getLabelIndex();
-//            int modelID = detection.getModelID();
-//
-//            // 打印或处理这些值
-////                                System.out.println("Detection:");
-////                                System.out.println("X: " + x);
-////                                System.out.println("Y: " + y);
-////                                System.out.println("Width: " + w);
-////                                System.out.println("Height: " + h);
-////                                System.out.println("Confidence: " + confidence);
-////                                System.out.println("Label Index: " + labelIndex);
-////                                System.out.println("Model ID: " + modelID);
-//            output = output + String.format("x: %d, y: %d, w: %d, h: %d, conf: %d, label: %d, model_id: %d \n", x, y, w, h, confidence, labelIndex, modelID);
-//        }
-
-
         invalidate();
-//        return output;
-//        this.x = x;
-//        this.y = y;
-//        this.width = width;
-//        this.height = height;
-//        invalidate(); // 触发重绘
     }
 }
 
