@@ -342,8 +342,8 @@ public class CameraGimbalActivity extends Activity implements TextureView.Surfac
                         float hei=flightControllerState.getUltrasonicHeightInMeters();
                         //LocationCoordinate3D  flyInf=flightControllerState.getAircraftLocation();
                         //float hei=flyInf.getAltitude();
-                        show(horizenDis, String.format("飞行距离：%.3fm", dis));
-                        show(vercalDis, String.format("飞行高度:%.3fm", hei));
+//                        show(horizenDis, String.format("飞行距离：%.3fm", dis));
+//                        show(vercalDis, String.format("飞行高度:%.3fm", hei));
                         show(horizenV, String.format("水平飞行速度：%.3fcm/s", ver));
                         show(vercalV, String.format("垂直飞行速度%.3fcm/s", z_ver));
                     }catch (Exception e){
@@ -483,13 +483,14 @@ public class CameraGimbalActivity extends Activity implements TextureView.Surfac
                     @Override
                     public void onReceive(byte[] bytes, int size) {
                         if (null != codecManager) {
+//                            codecManager.sendDataToDecoder(bytes, size);
                             handler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
                                     // 延迟后执行的操作
                                         codecManager.sendDataToDecoder(bytes, size);
                                 }
-                            }, 500);  // 延迟 2000 毫秒（2秒）
+                            }, 700);  // 延迟 2000 毫秒（2秒）
                         }
                     }
                 };
@@ -824,10 +825,10 @@ public class CameraGimbalActivity extends Activity implements TextureView.Surfac
                 break;*/
             case R.id.rgb_mode:
                 try {
-                    /*int width = mGduPlayView.getWidth();
+                    int width = mGduPlayView.getWidth();
                     int height = mGduPlayView.getHeight();
                     show(horizenDis, String.format("video width：%d", width));
-                    show(vercalDis, String.format("video height：%d", height));*/
+                    show(vercalDis, String.format("video height：%d", height));
 
                     chacktimes++;
                     if (chacktimes % 2 == 0) {

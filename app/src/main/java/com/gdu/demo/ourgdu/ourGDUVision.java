@@ -27,7 +27,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class ourGDUVision extends GDUVision {
+public class ourGDUVision {
     private GduCommunication3 mGduCommunication3;
     private OnTargetDetectListener targetDetectListener;
     private OnTargetTrackListener targetTrackListener;
