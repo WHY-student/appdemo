@@ -92,6 +92,7 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -171,7 +172,7 @@ public class CameraGimbalActivity extends Activity implements TextureView.Surfac
 
 //        timeShow();
 
-//        handler = new Handler(Looper.myLooper()) {
+        handler = new Handler(Objects.requireNonNull(Looper.myLooper()));
 //            @SuppressLint("SetTextI18n")
 //            public void handleMessage(Message msg) {
 //                try {
@@ -334,7 +335,7 @@ public class CameraGimbalActivity extends Activity implements TextureView.Surfac
                 public void onUpdate(FlightControllerState flightControllerState) {
                     try {
                         float x_ver = flightControllerState.getVelocityX();
-                        float y_ver = flightControllerState.getVelocityX();
+                        float y_ver = flightControllerState.getVelocityY();
                         float z_ver = flightControllerState.getVelocityZ();
                         float ver = (float) Math.sqrt(x_ver * x_ver + y_ver * y_ver);
                         float dis = flightControllerState.getDistance();
@@ -482,12 +483,11 @@ public class CameraGimbalActivity extends Activity implements TextureView.Surfac
                     @Override
                     public void onReceive(byte[] bytes, int size) {
                         if (null != codecManager) {
-                            Handler handler = new Handler(Looper.getMainLooper());
                             handler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
                                     // 延迟后执行的操作
-                                    codecManager.sendDataToDecoder(bytes, size);
+                                        codecManager.sendDataToDecoder(bytes, size);
                                 }
                             }, 500);  // 延迟 2000 毫秒（2秒）
                         }
