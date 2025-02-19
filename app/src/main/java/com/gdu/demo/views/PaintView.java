@@ -43,6 +43,12 @@ public class PaintView extends AppCompatImageView {
         class_label.add("new2");
         class_label.add("new3");
         class_label.add("unknown");
+
+//        class_label.add("bus");
+//        class_label.add("car");
+//        class_label.add("new1");
+//        class_label.add("new2");
+//        class_label.add("unknown");
     }
 //    private String text = "Sample Text";
     //private Handler handler;
@@ -164,7 +170,7 @@ public class PaintView extends AppCompatImageView {
                     label = class_label.get(labelindex);
                 }
             }
-            if (x >= 0 && y >= 0 && maxX < 1920 && maxY < 1080) {
+            if (x >= 0 && y >= 0 && maxX < 1920 && maxY < 1152) {
                 canvas.drawRect(new Rect(x, y, maxX, maxY), paint);//绘制矩形，并设置矩形框显示的位置
                 canvas.drawText(label, detection.getLeftX(), detection.getLeftY() - 5, paint2);
             }
