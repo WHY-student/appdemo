@@ -104,17 +104,32 @@ public class PaintView extends AppCompatImageView {
                 }
 
                 // 通过主线程的 Handler 调用 invalidate()
+                //long startTime = System.currentTimeMillis();
                 mainHandler.post(new Runnable() {
+                    long startTime = System.currentTimeMillis();
                     @Override
                     public void run() {
                         invalidate(); // 请求重绘
                     }
+
                 });
+                //long endTime = System.currentTimeMillis();
+
+                // 计算并输出 onDraw 执行时间
+                //long drawDuration = endTime - startTime;
+                //Log.d("BackgroundTaskTime", "backgroundTask" + drawDuration + " ms");
 
                 // 重复执行任务
+                long startTime = System.currentTimeMillis();
                 backgroundHandler.post(this);
+                long endTime = System.currentTimeMillis();
+
+                // 计算并输出 onDraw 执行时间
+                long drawDuration = endTime - startTime;
+                Log.d("BKTaskTime", "backgroundTask" + drawDuration + " ms");
             }
         });
+
     }
 
     @Override
@@ -147,30 +162,43 @@ public class PaintView extends AppCompatImageView {
     @SuppressLint("DrawAllocation")
     @Override
     protected void onDraw(Canvas canvas) {
+        // 记录开始时间，只调用onDraw会没有延迟
+        long startTime = System.currentTimeMillis();
+
         super.onDraw(canvas);
+
+        // 绘制逻辑
         for (TargetMode detection : this.detectionBox) {
             int x = detection.getLeftX();
             int y = detection.getLeftY();
             int maxX = x + detection.getWidth();
             int maxY = y + detection.getHeight();
             String label = null;
-            if(label==null){
+            if (label == null) {
                 int labelindex = detection.getFlawType();
-                if(labelindex==-1){
+                if (labelindex == -1) {
                     label = "unknown";
                 } else if (labelindex > 9) {
                     label = "test";
-                }else {
+                } else {
                     label = class_label.get(labelindex);
                 }
             }
             if (x >= 0 && y >= 0 && maxX < 1920 && maxY < 1080) {
-                canvas.drawRect(new Rect(x, y, maxX, maxY), paint);//绘制矩形，并设置矩形框显示的位置
-                canvas.drawText(label, detection.getLeftX(), detection.getLeftY() - 5, paint2);
+                canvas.drawRect(new Rect(x, y, maxX, maxY), paint); // 绘制矩形
+                canvas.drawText(label, detection.getLeftX(), detection.getLeftY() - 5, paint2); // 绘制文本
             }
         }
+
+        // 清空检测框数据
         this.detectionBox = new ArrayList<>();
-        //Log.d("PaintView", "Draw completed at: " + drawTime);
+
+        // 记录结束时间
+        long endTime = System.currentTimeMillis();
+
+        // 计算并输出 onDraw 执行时间
+        long drawDuration = endTime - startTime;
+        Log.d("PaintViewTime", "onDraw executed in: " + drawDuration + " ms");
     }
 
     public void setRectParams(List<TargetMode> detectionBox) {

@@ -363,11 +363,16 @@ public class CameraGimbalActivity extends Activity implements TextureView.Surfac
         else{
             try {
                 gduVision.setOnTargetDetectListener(new OnTargetDetectListener() {
+                    long startTime=System.currentTimeMillis();
                     @Override
                     public void onTargetDetecting(List<TargetMode> list) {
                         if (list == null) {
                             toast("没有检测物体");
                         } else {
+                            long midTime=System.currentTimeMillis();
+                            long durTime=midTime-startTime;
+                            Log.d("mideTime","从开始到检测到物体时间"+durTime);
+
 //                            toast("检测到物体");
 //                            TargetMode mode = list.get(0);
 //                            List<DetectionBox> detectionInformationList = new ArrayList<>();
@@ -383,6 +388,10 @@ public class CameraGimbalActivity extends Activity implements TextureView.Surfac
 //                            }
 
                             panitView.setRectParams(list);
+                            //long endTime=System.currentTimeMillis();
+                            //long ver= endTime -startTime;
+                            //Log.d("delaytime","延长时间"+ver);
+
                         }
                     }
 
