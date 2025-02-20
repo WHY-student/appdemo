@@ -331,6 +331,7 @@ public class CameraGimbalActivity extends Activity implements TextureView.Surfac
         else {
             mGDUFlightController = ((ourGDUAircraft) product).getFlightController();
             mGDUFlightController.setStateCallback(new FlightControllerState.Callback() {
+                @SuppressLint("DefaultLocale")
                 @Override
                 public void onUpdate(FlightControllerState flightControllerState) {
                     try {
@@ -339,11 +340,11 @@ public class CameraGimbalActivity extends Activity implements TextureView.Surfac
                         float z_ver = flightControllerState.getVelocityZ();
                         float ver = (float) Math.sqrt(x_ver * x_ver + y_ver * y_ver);
                         float dis = flightControllerState.getDistance();
-                        float hei=flightControllerState.getUltrasonicHeightInMeters();
+                        float hei = flightControllerState.getUltrasonicHeightInMeters();
                         //LocationCoordinate3D  flyInf=flightControllerState.getAircraftLocation();
                         //float hei=flyInf.getAltitude();
-//                        show(horizenDis, String.format("飞行距离：%.3fm", dis));
-//                        show(vercalDis, String.format("飞行高度:%.3fm", hei));
+                        show(horizenDis, String.format("总飞行距离：%.3fm", dis / 100));
+                        show(vercalDis, String.format("飞行高度:%.3fm", hei));
                         show(horizenV, String.format("水平飞行速度：%.3fcm/s", ver));
                         show(vercalV, String.format("垂直飞行速度%.3fcm/s", z_ver));
                     }catch (Exception e){
