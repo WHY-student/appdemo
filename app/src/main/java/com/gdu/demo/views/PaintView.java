@@ -98,7 +98,7 @@ public class PaintView extends AppCompatImageView {
             public void run() {
                 // 在后台线程中执行任务
                 try {
-                    Thread.sleep(50); // 模拟耗时操作
+                    Thread.sleep(60); // 模拟耗时操作
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -120,13 +120,13 @@ public class PaintView extends AppCompatImageView {
                 //Log.d("BackgroundTaskTime", "backgroundTask" + drawDuration + " ms");
 
                 // 重复执行任务
-                long startTime = System.currentTimeMillis();
+//                long startTime = System.currentTimeMillis();
                 backgroundHandler.post(this);
-                long endTime = System.currentTimeMillis();
+//                long endTime = System.currentTimeMillis();
 
                 // 计算并输出 onDraw 执行时间
-                long drawDuration = endTime - startTime;
-                Log.d("BKTaskTime", "backgroundTask" + drawDuration + " ms");
+//                long drawDuration = endTime - startTime;
+//                Log.d("BKTaskTime", "backgroundTask" + drawDuration + " ms");
             }
         });
 
@@ -167,12 +167,16 @@ public class PaintView extends AppCompatImageView {
 
         super.onDraw(canvas);
 
-        // 绘制逻辑
+        // 绘制逻辑 1920*1080      1920*1152      1920*1200        1080-》1200
         for (TargetMode detection : this.detectionBox) {
-            int x = detection.getLeftX();
-            int y = detection.getLeftY();
-            int maxX = x + detection.getWidth();
-            int maxY = y + detection.getHeight();
+//            int x = (int)(detection.getLeftX() / 1.5);
+//            int y = (int)(detection.getLeftY() / 1.5 * 1152.0 / 1080.0);
+//            int maxX = (int)((detection.getLeftX() + detection.getWidth()) / 1.5);
+//            int maxY = (int)((detection.getLeftY() + detection.getHeight()) / 1.5 * 1152.0 / 1080.0);
+            int x = (int)(detection.getLeftX());
+            int y = (int)(detection.getLeftY() * 1152.0 / 1080.0);
+            int maxX = (int)((detection.getLeftX() + detection.getWidth()));
+            int maxY = (int)((detection.getLeftY() + detection.getHeight()) * 1152.0 / 1080.0);
             String label = null;
             if (label == null) {
                 int labelindex = detection.getFlawType();
@@ -184,9 +188,9 @@ public class PaintView extends AppCompatImageView {
                     label = class_label.get(labelindex);
                 }
             }
-            if (x >= 0 && y >= 0 && maxX < 1920 && maxY < 1080) {
+            if (x >= 0 && y >= 0 && maxX < 1920 && maxY < 1152) {
                 canvas.drawRect(new Rect(x, y, maxX, maxY), paint); // 绘制矩形
-                canvas.drawText(label, detection.getLeftX(), detection.getLeftY() - 5, paint2); // 绘制文本
+                canvas.drawText(label, x, y - 5, paint2); // 绘制文本
             }
         }
 
@@ -194,11 +198,11 @@ public class PaintView extends AppCompatImageView {
         this.detectionBox = new ArrayList<>();
 
         // 记录结束时间
-        long endTime = System.currentTimeMillis();
-
-        // 计算并输出 onDraw 执行时间
-        long drawDuration = endTime - startTime;
-        Log.d("PaintViewTime", "onDraw executed in: " + drawDuration + " ms");
+//        long endTime = System.currentTimeMillis();
+//
+//        // 计算并输出 onDraw 执行时间
+//        long drawDuration = endTime - startTime;
+//        Log.d("PaintViewTime", "onDraw executed in: " + drawDuration + " ms");
     }
 
     public void setRectParams(List<TargetMode> detectionBox) {

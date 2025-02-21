@@ -4,11 +4,11 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.graphics.SurfaceTexture;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
 import android.view.TextureView;
@@ -17,39 +17,20 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Rect;
-import android.view.View;
 import android.util.Log;
 import androidx.annotation.RequiresApi;
 
-import com.amap.api.maps.AMap;
-import com.amap.api.maps.CameraUpdateFactory;
-import com.amap.api.maps.CoordinateConverter;
-import com.amap.api.maps.LocationSource;
-import com.amap.api.maps.MapView;
-import com.amap.api.maps.model.BitmapDescriptorFactory;
-import com.amap.api.maps.model.LatLng;
-import com.amap.api.maps.model.Marker;
-import com.amap.api.maps.model.MarkerOptions;
-import com.amap.api.maps.model.BitmapDescriptorFactory;
-import com.amap.api.maps.model.PolylineOptions;
-import com.gdu.camera.Capabilities;
+import com.gdu.battery.ConnectionState;
 import com.gdu.camera.SettingsDefinitions;
 import com.gdu.camera.StorageState;
+import com.gdu.common.GlobalVariable;
 import com.gdu.common.error.GDUError;
 import com.gdu.config.GduConfig;
-import com.gdu.demo.views.DetectionBox;
-import com.gdu.demo.views.DetectionInformation;
 import com.gdu.demo.views.PaintView;
 import com.gdu.demo.views.TargetBox;
 import com.gdu.drone.TargetMode;
 import com.gdu.gimbal.GimbalState;
-import com.gdu.gimbal.Rotation;
-import com.gdu.gimbal.RotationMode;
 import com.gdu.sdk.base.BaseProduct;
-import com.gdu.sdk.camera.CameraMode;
 import com.gdu.sdk.camera.GDUCamera;
 import com.gdu.sdk.camera.SystemState;
 import com.gdu.sdk.camera.VideoFeeder;
@@ -64,33 +45,10 @@ import com.gdu.sdk.battery.GDUBattery;
 import com.gdu.demo.ourgdu.ourGDUVision;
 import com.gdu.sdk.flightcontroller.FlightControllerState;
 import com.gdu.sdk.flightcontroller.GDUFlightController;
-import com.gdu.sdk.mission.MissionControl;
-import com.gdu.sdk.mission.waypoint.WaypointMissionOperator;
-import com.gdu.sdk.mission.waypoint.WaypointMissionOperatorListener;
 //import com.gdu.sdk.products.GDUAircraft;
-import com.gdu.sdk.simulator.InitializationData;
-import com.gdu.sdk.util.CommonCallbacks;
-import com.gdu.common.mission.waypoint.Waypoint;
-import com.gdu.common.mission.waypoint.WaypointAction;
-import com.gdu.common.mission.waypoint.WaypointActionType;
-import com.gdu.common.mission.waypoint.WaypointMission;
-import com.gdu.common.mission.waypoint.WaypointMissionExecutionEvent;
-import com.gdu.common.mission.waypoint.WaypointMissionFinishedAction;
-import com.gdu.common.mission.waypoint.WaypointHeadingMode;
-import com.gdu.common.mission.waypoint.WaypointMissionState;
-import com.gdu.common.mission.waypoint.WaypointMissionUploadEvent;
-import com.gdu.drone.LocationCoordinate2D;
-import com.gdu.drone.LocationCoordinate3D;
-import com.gdu.rtk.PositioningSolution;
 //import com.gdu.sdk.vision.GDUVision;
 import com.gdu.sdk.vision.OnTargetDetectListener;
-import com.gdu.sdk.vision.OnTargetTrackListener;
-import com.gdu.util.logs.RonLog;
 
-import java.nio.charset.StandardCharsets;
-import java.text.DateFormat;
-import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Executors;
@@ -104,8 +62,6 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  *
@@ -134,7 +90,9 @@ public class CameraGimbalActivity extends Activity implements TextureView.Surfac
     private TextView horizenV;
     private TextView vercalV;
 
-    private TargetBox targetBox;
+    private TextView startState;
+
+//    private TargetBox targetBox;
 
     //private TextView mGimbalStateTextView;
     private Context mContext;
@@ -158,6 +116,10 @@ public class CameraGimbalActivity extends Activity implements TextureView.Surfac
     //    private String mqtt_pub_topic = "esp135";
     private int chacktimes=0;
     private Button changeMode;
+
+    private HandlerThread backgroundThread;
+
+    private Handler backgroundHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -248,7 +210,35 @@ public class CameraGimbalActivity extends Activity implements TextureView.Surfac
 //            }
 //        };
         /* -------------------------------------------------------------------------------------- */
+        backgroundThread = new HandlerThread("BackgroundThread");
+        backgroundThread.start();
+        // 初始化后台线程的 Handler
+        backgroundHandler = new Handler(backgroundThread.getLooper());
 
+//        检测状态
+        backgroundHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                while (true){
+
+                    StringBuilder s = new StringBuilder();
+                    if(GlobalVariable.gpsAbnormal!=0){
+                        s.append("GPS信号弱       ");
+                    }
+                    if(GlobalVariable.batteryAbnormal!=0){
+                        s.append("电池异常");
+                    }
+//                    Log.i("State", s.toString());
+                    show(startState, s.toString());
+
+                    try {
+                        Thread.sleep(3000);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+        });
 
 
     }
@@ -291,7 +281,7 @@ public class CameraGimbalActivity extends Activity implements TextureView.Surfac
             mBattery.setStateCallback(new BatteryState.Callback() {
                 @Override
                 public void onUpdate(BatteryState state) {
-                    show(mBatteryPercentTextView, String.format("%s%%", state.getChargeRemainingInPercent()));
+                    show(mBatteryPercentTextView, String.format("电量:%s%%", state.getChargeRemainingInPercent()));
                 }
             });
             /*int percent = mBatteryState.getChargeRemainingInPercent();
@@ -307,18 +297,19 @@ public class CameraGimbalActivity extends Activity implements TextureView.Surfac
             return;
         }
         mGDUGimbal.setStateCallback(new GimbalState.Callback() {
+            @SuppressLint("DefaultLocale")
             @Override
             public void onUpdate(GimbalState state) {
-                StringBuilder s = new StringBuilder();
-                s.append(" Attitude pitch ");
-                s.append(state.getAttitudeInDegrees().pitch);
-                s.append(" Attitude roll ");
-                s.append(state.getAttitudeInDegrees().roll);
-                s.append(" Attitude yaw ");
-                s.append(state.getAttitudeInDegrees().yaw);
-                s.append(" isCalibrating ");
-                s.append(state.isCalibrating());
-                //show(mGimbalStateTextView, s.toString());
+//                StringBuilder s = new StringBuilder();
+//                s.append(" Attitude pitch ");
+//                s.append(state.getAttitudeInDegrees().pitch);
+//                s.append(" Attitude roll ");
+//                s.append(state.getAttitudeInDegrees().roll);
+//                s.append(" Attitude yaw ");
+//                s.append(state.getAttitudeInDegrees().yaw);
+//                s.append(" isCalibrating ");
+//                s.append(state.isCalibrating());
+                show(horizenDis, String.format("yaw: %.1f°", state.getAttitudeInDegrees().yaw));
             }
         });
     }
@@ -335,18 +326,20 @@ public class CameraGimbalActivity extends Activity implements TextureView.Surfac
                 @Override
                 public void onUpdate(FlightControllerState flightControllerState) {
                     try {
+//                        toast("飞行状态更新");
+
                         float x_ver = flightControllerState.getVelocityX();
                         float y_ver = flightControllerState.getVelocityY();
                         float z_ver = flightControllerState.getVelocityZ();
                         float ver = (float) Math.sqrt(x_ver * x_ver + y_ver * y_ver);
                         float dis = flightControllerState.getDistance();
-                        float hei = flightControllerState.getUltrasonicHeightInMeters();
+                        float hei = flightControllerState.getAircraftLocation().getAltitude();
                         //LocationCoordinate3D  flyInf=flightControllerState.getAircraftLocation();
                         //float hei=flyInf.getAltitude();
-                        show(horizenDis, String.format("总飞行距离：%.3fm", dis / 100));
-                        show(vercalDis, String.format("飞行高度:%.3fm", hei));
-                        show(horizenV, String.format("水平飞行速度：%.3fcm/s", ver));
-                        show(vercalV, String.format("垂直飞行速度%.3fcm/s", z_ver));
+//                        show(horizenDis, String.format("总飞行距离：%.3fm", dis / 100));
+                        show(vercalDis, String.format("飞行高度:%.3fm", hei / 100));
+                        show(horizenV, String.format("水平速度：%.1fm/s", ver / 100));
+                        show(vercalV, String.format("垂直速度:%.1fm/s", z_ver / 100));
                     }catch (Exception e){
                         Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_LONG).show();
                     }
@@ -506,7 +499,9 @@ public class CameraGimbalActivity extends Activity implements TextureView.Surfac
                 };
             }
 
-            changeMode=findViewById(R.id.rgb_mode);
+            changeMode = findViewById(R.id.rgb_mode);
+
+            startState = findViewById(R.id.not_start_state);
 
         }catch (Exception e){
             Toast.makeText(mContext, "initView Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
@@ -536,303 +531,6 @@ public class CameraGimbalActivity extends Activity implements TextureView.Surfac
 
     public void onClick(View view) {
         switch (view.getId()) {
-            /*case R.id.btn_record_video:
-                mGDUCamera.startRecordVideo(new CommonCallbacks.CompletionCallback() {
-                    @Override
-                    public void onResult(GDUError var1) {
-                        toast("开始录像成功");
-                    }
-                });
-                break;
-            case R.id.btn_stop_record_video:
-                mGDUCamera.stopRecordVideo(new CommonCallbacks.CompletionCallback() {
-                    @Override
-                    public void onResult(GDUError var1) {
-                        toast("停止录像成功");
-                    }
-                });
-                break;
-            case R.id.btn_single_take_picture:
-                mGDUCamera.startShootPhoto(new CommonCallbacks.CompletionCallback() {
-                    @Override
-                    public void onResult(GDUError var1) {
-                        toast("拍照发送成功");
-                    }
-                });
-                break;
-            case R.id.btn_model_change:
-                mGDUCamera.setMode(CameraMode.RECORD_VIDEO, new CommonCallbacks.CompletionCallback() {
-                    @Override
-                    public void onResult(GDUError var1) {
-                        toast("模式发送成功");
-                    }
-                });
-                break;
-            case R.id.btn_format_sd_card:
-                mGDUCamera.formatSDCard(new CommonCallbacks.CompletionCallback() {
-                    @Override
-                    public void onResult(GDUError var1) {
-                        toast("格式化SD发送成功");
-                    }
-                });
-                break;
-            case R.id.btn_get_version:
-                mGDUCamera.getFirmwareVersion(new CommonCallbacks.CompletionCallbackWith<String>() {
-                    @Override
-                    public void onSuccess(String version) {
-                        show(mVersionTextView, version);
-                    }
-
-                    @Override
-                    public void onFailure(GDUError var1) {
-                        show(mVersionTextView, "fail");
-                    }
-                });
-                break;
-            case R.id.btn_get_focal_length:
-                mGDUCamera.getOpticalZoomFocalLength(new CommonCallbacks.CompletionCallbackWith<Integer>() {
-                    @Override
-                    public void onSuccess(Integer focalLength) {
-                        toast("获取焦距发送成功 " + focalLength);
-                    }
-
-                    @Override
-                    public void onFailure(GDUError var1) {
-                        toast("获取焦距发送失败");
-                    }
-                });
-                break;
-            case R.id.btn_start_continuous_optical_zoom:
-                mGDUCamera.startContinuousOpticalZoom(SettingsDefinitions.ZoomDirection.ZOOM_IN, SettingsDefinitions.ZoomSpeed.SLOWEST, new CommonCallbacks.CompletionCallback() {
-                    @Override
-                    public void onResult(GDUError error) {
-                        if (error == null) {
-                            toast("发送成功");
-                        } else {
-                            toast("发送失败");
-                        }
-                    }
-                });
-                break;
-            case R.id.btn_stop_continuous_optical_zoom:
-                mGDUCamera.stopContinuousOpticalZoom(new CommonCallbacks.CompletionCallback() {
-                    @Override
-                    public void onResult(GDUError error) {
-                        if (error == null) {
-                            toast("发送成功");
-                        } else {
-                            toast("发送失败");
-                        }
-                    }
-                });
-                break;
-            case R.id.btn_set_display_mode:
-                mGDUCamera.setDisplayMode(SettingsDefinitions.DisplayMode.WAL, new CommonCallbacks.CompletionCallback() {
-                    @Override
-                    public void onResult(GDUError error) {
-                        if (error == null) {
-                            toast("发送成功");
-                        } else {
-                            toast("发送失败");
-                        }
-                    }
-                });
-                break;
-            case R.id.btn_get_display_mode:
-                mGDUCamera.getDisplayMode(new CommonCallbacks.CompletionCallbackWith<SettingsDefinitions.DisplayMode>() {
-                    @Override
-                    public void onSuccess(SettingsDefinitions.DisplayMode displayMode) {
-                        toast("发送成功 " + displayMode);
-                    }
-
-                    @Override
-                    public void onFailure(GDUError var1) {
-                        toast("发送失败");
-                    }
-                });
-                break;
-            case R.id.btn_set_digital_zoom:
-                mGDUCamera.setDigitalZoomFactor(1, new CommonCallbacks.CompletionCallback() {
-                    @Override
-                    public void onResult(GDUError error) {
-                        if (error == null) {
-                            toast("发送成功");
-                        } else {
-                            toast("发送失败");
-                        }
-                    }
-                });
-                break;
-            case R.id.btn_get_digital_zoom:
-                mGDUCamera.getDigitalZoomFactor(new CommonCallbacks.CompletionCallbackWith<Float>() {
-                    @Override
-                    public void onSuccess(Float var1) {
-                        toast("发送成功 " + var1);
-                    }
-
-                    @Override
-                    public void onFailure(GDUError var1) {
-                        toast("发送失败 ");
-                    }
-                });
-                break;
-            case R.id.btn_reset:
-                mGDUGimbal.reset(new CommonCallbacks.CompletionCallback() {
-                    @Override
-                    public void onResult(GDUError error) {
-                        if (error == null) {
-                            toast("发送成功");
-                        } else {
-                            toast("发送失败");
-                        }
-                    }
-                });
-                break;
-            case R.id.btn_rotate:  //TODO 俯仰，方位会变
-                Rotation rotation = new Rotation();
-                rotation.setMode(RotationMode.ABSOLUTE_ANGLE);
-                rotation.setPitch(90);
-//                rotation.set
-                mGDUGimbal.rotate(rotation, new CommonCallbacks.CompletionCallback() {
-                    @Override
-                    public void onResult(GDUError error) {
-                        if (error == null) {
-                            toast("发送成功");
-                        } else {
-                            toast("发送失败");
-                        }
-                    }
-                });
-                break;
-            case R.id.btn_get_sn:
-                mGDUGimbal.getGimbalSN(new CommonCallbacks.CompletionCallbackWith<String>() {
-                    @Override
-                    public void onSuccess(String sn) {
-                        toast("sn：" + sn);
-                    }
-
-                    @Override
-                    public void onFailure(GDUError var1) {
-
-                    }
-                });
-                break;
-            case R.id.btn_get_gimbal_version:
-                mGDUGimbal.getFirmwareVersion(new CommonCallbacks.CompletionCallbackWith<String>() {
-                    @Override
-                    public void onSuccess(String version) {
-                        toast("version：" + version);
-                    }
-
-                    @Override
-                    public void onFailure(GDUError var1) {
-
-                    }
-                });
-                break;
-            case R.id.btn_start_calibration:
-                mGDUGimbal.startCalibration(new CommonCallbacks.CompletionCallback() {
-                    @Override
-                    public void onResult(GDUError error) {
-                        if (error == null) {
-                            toast("发送成功");
-                        } else {
-                            toast("发送失败");
-                        }
-                    }
-                });
-                break;
-            case R.id.btn_record_video_to_local:
-                if (codecManager != null) {
-                    codecManager.startStoreMp4ToLocal(OUTPATH, "test.mp4");
-                }
-                break;
-            case R.id.btn_stop_record_video_to_local:
-                if (codecManager != null) {
-                    codecManager.stopStoreMp4ToLocal();
-                }
-                break;
-            case R.id.btn_enabled_yuv_data:
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    codecManager.enabledYuvData(true);
-                }
-                break;
-
-            case R.id.btn_get_yuv_data:
-                byte[] yuvData =  codecManager.getYuvData();
-                Bitmap bitmap = mImageProcessingManager.convertYUVtoRGB(yuvData, codecManager.getVideoWidth(), codecManager.getVideoHeight());
-//                Bitmap bitmap = mFastYUVtoRGB.test(yuvData, 1920, 1080);
-                if (bitmap != null) {
-                    mYUVImageView.setImageBitmap(bitmap);
-                }
-                break;
-            case R.id.btn_get_rgba_data:
-                byte[] rgbData = codecManager.getRgbaData();
-                Bitmap bitmap1 = ImageProcessingManager.rgb2Bitmap(rgbData, codecManager.getVideoWidth(), codecManager.getVideoHeight());
-                if (bitmap1 != null) {
-                    mYUVImageView.setImageBitmap(bitmap1);
-                }
-                break;
-            case R.id.btn_store_picture_to_local:
-                if (codecManager != null) {
-                    codecManager.storageCurrentStreamToPicture(OUTPATH, "test.png", new CommonCallbacks.CompletionCallback() {
-                        @Override
-                        public void onResult(GDUError error) {
-                            if (error == null) {
-                                toast("存储成功");
-                            } else {
-                                toast("存储失败");
-                            }
-                        }
-                    });
-                }
-                break;
-            case R.id.btn_get_capabilities:
-                Capabilities capabilities = mGDUCamera.getCapabilities();
-                SettingsDefinitions.ExposureCompensation[] exposureCompensations = capabilities.exposureCompensationRange();
-                String evS = new String();
-                if (exposureCompensations != null) {
-                    for (SettingsDefinitions.ExposureCompensation exposureCompensation : exposureCompensations) {
-                        evS += exposureCompensation;
-                        evS += " ";
-                    }
-                    System.out.println("test ev " + evS);
-                }
-                SettingsDefinitions.ISO[] isos = capabilities.ISORange();
-                if (isos != null) {
-                    String isoS = new String();
-                    for (SettingsDefinitions.ISO iso : isos) {
-                        isoS += iso;
-                        isoS += " ";
-                    }
-                    System.out.println("test iso " + isoS);
-                }
-                break;
-            case R.id.btn_set_ev:
-                mGDUCamera.setExposureCompensation(SettingsDefinitions.ExposureCompensation.N_1_0, new CommonCallbacks.CompletionCallback() {
-                    @Override
-                    public void onResult(GDUError error) {
-                        if (error == null) {
-                            toast("设置成功");
-                        } else {
-                            toast("设置失败");
-                        }
-                    }
-                });
-                break;
-            case R.id.btn_get_ev:
-                mGDUCamera.getExposureCompensation(new CommonCallbacks.CompletionCallbackWith<SettingsDefinitions.ExposureCompensation>() {
-                    @Override
-                    public void onSuccess(SettingsDefinitions.ExposureCompensation exposureCompensation) {
-                        toast("获取成功： " + exposureCompensation);
-                    }
-
-                    @Override
-                    public void onFailure(GDUError gduError) {
-                        toast("获取失败： ");
-                    }
-                });
-                break;*/
             case R.id.rgb_mode:
                 try {
                     int width = mGduPlayView.getWidth();
@@ -929,154 +627,30 @@ public class CameraGimbalActivity extends Activity implements TextureView.Surfac
                     Toast.makeText(mContext, "setFocus Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 }
                 break;
-            case R.id.ai_recognize:
-
-//                gduVision.setOnTargetTrackListener(new OnTargetTrackListener() {
-//                       @Override
-//                       public void onTargetDetecting(List<TargetMode> list) {
-//                           toast("获取到物体");
-//                       }
-//
-//                       @Override
-//                       public void onTargetTracking(TargetMode targetMode) {
-//                            toast("正在跟踪物体");
-//                       }
-//
-//                       @Override
-//                       public void onTargetTrackFailed(int i) {
-//
-//                       }
-//
-//                       @Override
-//                       public void onTargetTrackStart() {
-//
-//                       }
-//
-//                       @Override
-//                       public void onTargetTrackStop() {
-//
-//                       }
-//
-//                       @Override
-//                       public void onTargetTrackModelClose() {
-//
-//                       }
-//                   }
-//                );
-//                gduVision.startSmartTrack(gduError ->{
-//                    if (gduError!=null){
-//                        toast("目标跟踪启动出现错误");
-//                    }
-//                    else{
-//                        toast("目标跟踪顺利启动");
-//                    }
-//                });
-//
-//
-//                gduVision.setOnTargetDetectListener(new OnTargetDetectListener() {
-//
-//                    @Override
-//                    public void onTargetDetecting(List<TargetMode> list) {
-//                        if (list == null) {
-//                            toast("没有检测物体");
-//                        } else {
-//                            toast("检测到物体");
-//                            TargetMode mode = list.get(0);
-//                            mode.getLeftX();
-//                            mode.getLeftY();
-//                            mode.getWidth();
-//                            mode.getHeight();
-//                            mode.getId();
-//                            mode.getTargetType();
-////                            mYUVImageView;
-//
-//
-//
-//                            show(horizenDis, String.format("物体TargetType：%d",mode.getTargetType()));
-//                            show(vercalDis, String.format("物体id:%d",mode.getId()));
-//                            show(horizenV, String.format("宽度：%d",mode.getWidth()));
-//                            show(vercalV, String.format("高度：%d",mode.getHeight()));
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onTargetDetectFailed(int i) {
-//                        toast("检测失败");
-//
-//                    }
-//
-//                    @Override
-//                    public void onTargetDetectStart() {
-//                        toast("按键处检测开始");
-//
-//                    }
-//
-//                    @Override
-//                    public void onTargetDetectFinished() {
-//                        toast("按键部分检测结束");
-//
-//                    }
-//                });
+            case R.id.start_go_home:
+                mGDUFlightController.startGoHome(new CommonCallbacks.CompletionCallback() {
+                    @Override
+                    public void onResult(GDUError gduError) {
+                        if(gduError == null){
+                            toast("发送返航指令");
+                        } else {
+                            toast("发送失败");
+                        }
+                    }
+                });
                 break;
-            case R.id.quit_airecognize:
-//                gduVision.stopSmartTrack(gduError -> {
-//                    if (gduError!=null){
-//                        toast("目标跟踪终止出现错误");
-//                    }
-//                    else{
-//                        toast("目标跟踪顺利终止");
-//                    }
-//                });
-//                gduVision.stopTargetDetect(gduError -> {
-//                    if (gduError!=null){
-//                        toast("目标识别终止出现错误");
-//                    }
-//                    else{
-//                        toast("目标识别顺利终止");
-//                    }
-//                });
-//                gduVision.setOnTargetDetectListener(new OnTargetDetectListener() {
-//                    @Override
-//                    public void onTargetDetecting(List<TargetMode> list) {
-//                        if (list == null) {
-//                            toast("结束没有检测物体");
-//                        } else {
-//                            toast("检测到物体");
-//                            TargetMode mode = list.get(0);
-//                            mode.getLeftX();
-//                            mode.getLeftY();
-//                            mode.getWidth();
-//                            mode.getHeight();
-//                            mode.getId();
-//                            mode.getTargetType();
-//
-//
-//                            show(horizenDis, String.format("物体TargetType：%d",mode.getTargetType()));
-//                            show(vercalDis, String.format("物体id:%d",mode.getId()));
-//                            show(horizenV, String.format("宽度：%d",mode.getWidth()));
-//                            show(vercalV, String.format("高度：%d",mode.getHeight()));
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onTargetDetectFailed(int i) {
-//                        toast("结束检测失败");
-//
-//                    }
-//
-//                    @Override
-//                    public void onTargetDetectStart() {
-//                        toast("结束按键处检测开始");
-//
-//                    }
-//
-//                    @Override
-//                    public void onTargetDetectFinished() {
-//                        toast("结束按键部分检测结束");
-//
-//                    }
-//                });
+            case R.id.start_landing:
 
+                mGDUFlightController.startLanding(new CommonCallbacks.CompletionCallback() {
+                    @Override
+                    public void onResult(GDUError gduError) {
+                        if(gduError == null){
+                            toast("发送降落指令");
+                        } else {
+                            toast("发送失败");
+                        }
+                    }
+                });
                 break;
 
             /*case R.id.btn_set_hd_liveview_enabled:
