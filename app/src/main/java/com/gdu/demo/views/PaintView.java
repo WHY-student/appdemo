@@ -203,6 +203,17 @@ public class PaintView extends AppCompatImageView {
 
     public void setRectParams(List<TargetMode> detectionBox) {
         this.detectionBox = detectionBox;
+        for (TargetMode detection : this.detectionBox) {
+            int x = detection.getLeftX();
+            int y = detection.getLeftY();
+            int part3 = detection.getWidth();
+            int part4 = y + detection.getHeight();
+            long startTime=System.currentTimeMillis();
+            long timeSampe=part4+part3*10000+y*(long)Math.pow(10,7)+x*(long)Math.pow(10,10);
+            long durTime=startTime-timeSampe;
+            Log.d("sendTime","x为"+x+"y为"+y+"part3为"+part3+"part4为"+part4+"发送时间"+timeSampe+"当前时间戳"+startTime);
+            Log.d("total","延迟时间"+durTime);
+        }
 //        long drawTime = System.currentTimeMillis();
 //        if(drawTime - this.timestamp > 100){
 //            this.timestamp = drawTime;
